@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Registration - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e40af',
+                        accent: '#3b82f6',
+                        dark: '#1e3a8a',
+                        light: '#eff6ff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #0066cc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #0052a3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .facility-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .facility-item input {
+            margin-right: 10px;
+        }
+
+        .registration-type {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .type-card {
+            flex: 1;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-5px);
+        }
+
+        .type-card.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        .type-card i {
+            font-size: 3rem;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .type-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #1e3a8a;
+        }
+
+        .hidden-section {
+            display: none;
+        }
+
+        .phone-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #20c997;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3b82f6;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <!-- Top Navigation Bar - Matches index.html -->
+    <nav class="gradient-bg text-white shadow-lg rounded-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="index.html#features" class="hover:text-blue-200 transition">Features</a>
+                <a href="index.html#for-patients" class="hover:text-blue-200 transition">For Patients</a>
+                <a href="index.html#for-hospitals" class="hover:text-blue-200 transition">For Hospitals</a>
+                <a href="index.html#about" class="hover:text-blue-200 transition">About</a>
+            </div>
+            <div>
+                <a href="/login"
+                    class="bg-white text-blue-700 px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Hospital Registration</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Register your healthcare facility with the National e-Hospital platform to serve patients nationwide</p>
+            
+            <div class="progress-bar mt-8">
+                <div class="progress" id="registration-progress"></div>
+            </div>
+        </div>
+
+        <!-- Registration Type Selection -->
+        <div class="registration-type">
+            <div class="type-card" id="hospital-card" onclick="selectType('hospital')">
+                <i class="fas fa-hospital"></i>
+                <h3>Hospital</h3>
+                <p>Multi-specialty healthcare facility with inpatient services</p>
+            </div>
+            <div class="type-card" id="clinic-card" onclick="selectType('clinic')">
+                <i class="fas fa-clinic-medical"></i>
+                <h3>Clinic</h3>
+                <p>Specialized healthcare facility for outpatient services</p>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <form id="registration-form">
+            <!-- Hidden field for facility type -->
+            <input type="hidden" id="facility-type" name="facility-type" value="hospital">
+
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="facility-name">Facility Name *</label>
+                        <input type="text" id="facility-name" name="facility-name" placeholder="Enter facility name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registration-number">Registration Number *</label>
+                        <input type="text" id="registration-number" name="registration-number" placeholder="Government registration number" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="facility-type-select">Type of Facility *</label>
+                        <select id="facility-type-select" name="facility-type-select" required>
+                            <option value="">Select facility type</option>
+                            <option value="government">Government Hospital</option>
+                            <option value="private">Private Hospital</option>
+                            <option value="trust">Trust/NGO Hospital</option>
+                            <option value="specialty">Specialty Clinic</option>
+                            <option value="dental">Dental Clinic</option>
+                            <option value="diagnostic">Diagnostic Center</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="established-year">Year Established *</label>
+                        <input type="number" id="established-year" name="established-year" placeholder="Year" min="1900" max="2025" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-address-book"></i> Contact Information</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <input type="text" id="address" name="address" placeholder="Street address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" name="city" placeholder="City" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="state">State *</label>
+                        <input type="text" id="state" name="state" placeholder="State" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="postal-code">Postal Code *</label>
+                        <input type="text" id="postal-code" name="postal-code" placeholder="Postal code" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="phone">Primary Phone *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input type="url" id="website" name="website" placeholder="Website URL (if any)">
+                </div>
+            </div>
+
+            <!-- Hospital Specific Section -->
+            <div class="form-section" id="hospital-section">
+                <h3 class="section-title"><i class="fas fa-hospital-alt"></i> Hospital Details</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="form-group">
+                        <label for="beds">Number of Beds *</label>
+                        <input type="number" id="beds" name="beds" placeholder="Total beds" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="icu-beds">ICU Beds</label>
+                        <input type="number" id="icu-beds" name="icu-beds" placeholder="ICU beds" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="operation-theaters">Operation Theaters</label>
+                        <input type="number" id="operation-theaters" name="operation-theaters" placeholder="Number" min="0">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="accreditation">Accreditation</label>
+                    <select id="accreditation" name="accreditation">
+                        <option value="">Select accreditation</option>
+                        <option value="nabh">NABH</option>
+                        <option value="jci">JCI</option>
+                        <option value="nabl">NABL</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Specialties Offered *</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        <div class="facility-item">
+                            <input type="checkbox" id="cardiology" name="specialties" value="cardiology">
+                            <label for="cardiology">Cardiology</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="orthopedics" name="specialties" value="orthopedics">
+                            <label for="orthopedics">Orthopedics</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="neurology" name="specialties" value="neurology">
+                            <label for="neurology">Neurology</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="oncology" name="specialties" value="oncology">
+                            <label for="oncology">Oncology</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="pediatrics" name="specialties" value="pediatrics">
+                            <label for="pediatrics">Pediatrics</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="obgyn" name="specialties" value="obgyn">
+                            <label for="obgyn">OB/GYN</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinic Specific Section -->
+            <div class="form-section hidden-section" id="clinic-section">
+                <h3 class="section-title"><i class="fas fa-stethoscope"></i> Clinic Details</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="clinic-type">Clinic Type *</label>
+                        <select id="clinic-type" name="clinic-type">
+                            <option value="">Select clinic type</option>
+                            <option value="general">General Practice</option>
+                            <option value="dental">Dental</option>
+                            <option value="dermatology">Dermatology</option>
+                            <option value="ophthalmology">Ophthalmology</option>
+                            <option value="ent">ENT</option>
+                            <option value="physiotherapy">Physiotherapy</option>
+                            <option value="other">Other Specialty</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="consultation-rooms">Consultation Rooms *</label>
+                        <input type="number" id="consultation-rooms" name="consultation-rooms" placeholder="Number" min="1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Services Offered *</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        <div class="facility-item">
+                            <input type="checkbox" id="consultation" name="services" value="consultation">
+                            <label for="consultation">General Consultation</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="vaccination" name="services" value="vaccination">
+                            <label for="vaccination">Vaccination</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="minor-procedures" name="services" value="minor-procedures">
+                            <label for="minor-procedures">Minor Procedures</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="diagnostics" name="services" value="diagnostics">
+                            <label for="diagnostics">Diagnostic Tests</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="pharmacy" name="services" value="pharmacy">
+                            <label for="pharmacy">Pharmacy</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="emergency" name="services" value="emergency">
+                            <label for="emergency">Emergency Care</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staff Information Section -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-user-md"></i> Staff Information</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="form-group">
+                        <label for="doctors">Number of Doctors *</label>
+                        <input type="number" id="doctors" name="doctors" placeholder="Total doctors" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nurses">Number of Nurses *</label>
+                        <input type="number" id="nurses" name="nurses" placeholder="Total nurses" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="support-staff">Support Staff *</label>
+                        <input type="number" id="support-staff" name="support-staff" placeholder="Total staff" min="0" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facility Information Section -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-building"></i> Facility Information</h3>
+                
+                <div class="form-group">
+                    <label for="operating-hours">Operating Hours *</label>
+                    <input type="text" id="operating-hours" name="operating-hours" placeholder="e.g., 9:00 AM - 8:00 PM" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Facilities Available</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        <div class="facility-item">
+                            <input type="checkbox" id="parking" name="facilities" value="parking">
+                            <label for="parking">Parking</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="wheelchair" name="facilities" value="wheelchair">
+                            <label for="wheelchair">Wheelchair Access</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="pharmacy-facility" name="facilities" value="pharmacy">
+                            <label for="pharmacy-facility">Pharmacy</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="lab" name="facilities" value="lab">
+                            <label for="lab">Laboratory</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="imaging" name="facilities" value="imaging">
+                            <label for="imaging">Imaging Services</label>
+                        </div>
+                        <div class="facility-item">
+                            <input type="checkbox" id="ambulance" name="facilities" value="ambulance">
+                            <label for="ambulance">Ambulance Service</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Administrator Information Section -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-user-tie"></i> Administrator Information</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="admin-name">Full Name *</label>
+                        <input type="text" id="admin-name" name="admin-name" placeholder="Administrator's name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admin-designation">Designation *</label>
+                        <input type="text" id="admin-designation" name="admin-designation" placeholder="Designation" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="admin-email">Email *</label>
+                        <input type="email" id="admin-email" name="admin-email" placeholder="Email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admin-phone">Phone *</label>
+                        <input type="tel" id="admin-phone" name="admin-phone" placeholder="Phone" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Setup Section -->
+            <div class="form-section">
+                <h3 class="section-title"><i class="fas fa-lock"></i> Account Setup</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="username">Username *</label>
+                        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password *</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agreement Section -->
+            <div class="form-section">
+                <div class="form-group">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="checkbox" id="terms" name="terms" required>
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="terms" class="font-medium text-gray-700">I agree to the <a href="#" class="text-blue-600 hover:underline">Terms and Conditions</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="checkbox" id="consent" name="consent" required>
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="consent" class="font-medium text-gray-700">I consent to share facility information with patients and government health authorities as required</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-8">
+                <button type="submit" class="btn btn-block">
+                    <i class="fas fa-paper-plane mr-2"></i> Submit Registration
+                </button>
+            </div>
+        </form>
+        
+        <!-- Support Section -->
+        <div class="mt-12 bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
+            <h3 class="text-2xl font-bold text-blue-800 mb-4">Need Assistance?</h3>
+            <p class="text-gray-600 mb-6">Our onboarding team is ready to help you with the registration process</p>
+            <div class="phone-number">
+                <i class="fas fa-phone mr-2"></i> 1-800-HOSPITAL (1-800-467-7425)
+            </div>
+            <p class="text-gray-600 mt-2">Email: support@nationalehospital.gov.in</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8 mt-16 rounded-lg">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-hospital mr-2"></i> National e-Hospital
+                    </h3>
+                    <p class="text-gray-400">A Government of India initiative to digitize healthcare access under the Ayushman Bharat scheme.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Patients</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#features" class="text-gray-400 hover:text-white transition">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Patient Registration</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Find Hospitals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Healthcare Providers</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Benefits</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Onboarding Process</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">HMIS Integration</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Technical Support</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            24x7 Helpline: 1800-123-4567</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            support@nationalehospital.gov.in</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-map-marker-alt mr-3 text-blue-400"></i> 
+                            Ministry of Health & Family Welfare, New Delhi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-gray-500 text-sm">© 2025 National e-Hospital. All rights reserved.</p>
+                    </div>
+                    <div class="flex space-x-4 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </footer>
+
+    <script>
+        // Function to select facility type
+        function selectType(type) {
+            // Update visual selection
+            document.getElementById('hospital-card').classList.remove('selected');
+            document.getElementById('clinic-card').classList.remove('selected');
+            document.getElementById(`${type}-card`).classList.add('selected');
+            
+            // Update hidden field
+            document.getElementById('facility-type').value = type;
+            
+            // Show/hide specific sections
+            if (type === 'hospital') {
+                document.getElementById('hospital-section').classList.remove('hidden-section');
+                document.getElementById('clinic-section').classList.add('hidden-section');
+                // Set required fields for hospital
+                document.getElementById('beds').required = true;
+                document.getElementById('clinic-type').required = false;
+                updateProgress(30);
+            } else {
+                document.getElementById('hospital-section').classList.add('hidden-section');
+                document.getElementById('clinic-section').classList.remove('hidden-section');
+                // Set required fields for clinic
+                document.getElementById('beds').required = false;
+                document.getElementById('clinic-type').required = true;
+                updateProgress(30);
+            }
+        }
+        
+        // Function to update progress bar
+        function updateProgress(percent) {
+            document.getElementById('registration-progress').style.width = percent + '%';
+        }
+
+        // Initialize with hospital selected
+        window.onload = function() {
+            selectType('hospital');
+            updateProgress(10);
+            
+            // Add event listeners to form fields
+            const formFields = document.querySelectorAll('input, select');
+            formFields.forEach(field => {
+                field.addEventListener('input', () => {
+                    updateProgress(60);
+                });
+            });
+            
+            // Form validation
+            document.getElementById('registration-form').addEventListener('submit', function(e) {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    e.preventDefault();
+                    return;
+                }
+                
+                // In a real application, this would submit to a server
+                alert('Registration submitted successfully! Our team will review your application and contact you shortly.');
+                updateProgress(100);
+                // Prevent actual form submission for this demo
+                e.preventDefault();
+            });
+        }
+    </script>
+</body>
+</html>

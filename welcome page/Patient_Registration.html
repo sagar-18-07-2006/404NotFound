@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .drawer {
+                transform: translateX(-100%);
+            }
+
+            .drawer-open {
+                transform: translateX(0);
+            }
+        }
+
+        /* Registration Form Styles */
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            color: #0066cc;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #0066cc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+
+        .form-group {
+            flex: 1 0 300px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+            outline: none;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-check input {
+            margin-right: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #0052a3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Approval Section */
+        .approval-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .approval-badge {
+            background: #e6f7ff;
+            border: 2px solid #0066cc;
+            border-radius: 10px;
+            padding: 30px 20px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .approval-badge i {
+            font-size: 48px;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+
+        .approval-badge h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .support-info {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        .support-info h4 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .support-info p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .phone-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #20c997;
+            margin: 10px 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 102, 204, 0.9), rgba(0, 86, 179, 0.85)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23004d99"/><path d="M0 50 L100 50 M50 0 L50 100" stroke="%230066cc" stroke-width="1"/></svg>');
+            background-size: cover;
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.95;
+        }
+
+        .registration-header {
+            background: rgba(255, 255, 255, 0.9);
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .registration-header h2 {
+            color: #0066cc;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .registration-header ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .registration-header li {
+            color: #333;
+            font-weight: 600;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #20c997;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+            font-size: 0.9rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                flex: 1 0 100%;
+            }
+            
+            nav ul li {
+                margin: 5px;
+            }
+            
+            .registration-header {
+                padding: 10px 15px;
+            }
+            
+            .registration-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen p-4">
+    <!-- Top Navigation Bar - Matches index.html -->
+    <nav class="gradient-bg text-white shadow-lg rounded-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-blue-200 transition">Features</a>
+                <a href="#" class="hover:text-blue-200 transition">For Patients</a>
+                <a href="#" class="hover:text-blue-200 transition">For Hospitals</a>
+                <a href="#" class="hover:text-blue-200 transition">About</a>
+            </div>
+            <div>
+                <a href="#"
+                    class="bg-white text-blue-700 px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="drawer fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 p-4 md:hidden">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h2 class="text-xl font-bold text-blue-800">National e-Hospital</h2>
+            </div>
+            <button id="close-menu" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="space-y-4">
+            <a href="#"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Features</a>
+            <a href="#"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">For Patients</a>
+            <a href="#"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">For Hospitals</a>
+            <a href="#"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">About</a>
+            <div class="pt-4 border-t mt-4">
+                <a href="#"
+                    class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition">Login</a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative gradient-bg text-white rounded-lg mt-4">
+        <div class="container mx-auto px-4 py-16 flex flex-col items-center">
+            <h1 class="text-4xl font-bold mb-6">Revolutionizing Healthcare Access Nationwide</h1>
+            <p class="text-xl mb-8 max-w-3xl text-center">Our government-recognized digital platform streamlines hospital appointments, reduces wait times, and improves healthcare access for all citizens.</p>
+            
+            <div class="registration-header">
+                <h2 class="text-2xl font-bold">Patient Registration</h2>
+                <ul>
+                    <li><i class="fas fa-arrow-right"></i> <strong>Hospital Onboarding</strong></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">250+</div>
+                    <div class="text-gray-600">Partner Hospitals</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">10M+</div>
+                    <div class="text-gray-600">Patients Served</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">95%</div>
+                    <div class="text-gray-600">Reduced Wait Times</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">24/7</div>
+                    <div class="text-gray-600">Support Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Registration Form -->
+            <div class="lg:col-span-2">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2><i class="fas fa-user-plus"></i> Patient Registration</h2>
+                        <p>Join millions of patients using our government-endorsed healthcare platform</p>
+                    </div>
+
+                    <form id="registration-form">
+                        <!-- Personal Information -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-user"></i> Personal Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dateOfBirth">Date of Birth</label>
+                                    <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="gender">Gender</label>
+                                    <select id="gender" name="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nationalId">National ID</label>
+                                    <input type="text" id="nationalId" name="nationalId" placeholder="Enter your national ID" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-address-book"></i> Contact Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" id="address" name="address" placeholder="Enter your street address" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" name="city" placeholder="Enter your city" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="state">State/Province</label>
+                                    <input type="text" id="state" name="state" placeholder="Enter your state" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="postalCode">Postal Code</label>
+                                    <input type="text" id="postalCode" name="postalCode" placeholder="Enter postal code" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Information -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-heartbeat"></i> Health Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bloodType">Blood Type</label>
+                                    <select id="bloodType" name="bloodType">
+                                        <option value="">Select Blood Type</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="allergies">Allergies</label>
+                                    <input type="text" id="allergies" name="allergies" placeholder="List any allergies">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="medicalHistory">Medical History</label>
+                                    <textarea id="medicalHistory" name="medicalHistory" rows="3" placeholder="Any pre-existing conditions or medical history"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Setup -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-lock"></i> Account Setup</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consent Section -->
+                        <div class="form-section">
+                            <div class="form-check">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <label for="terms">I agree to the <a href="#" class="text-blue-600 hover:underline">Terms and Conditions</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a></label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="consent" name="consent" required>
+                                <label for="consent">I consent to share my health information with partner hospitals for better care coordination</label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-block">Complete Registration</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Approval and Support Section -->
+            <div class="approval-section">
+                <div class="approval-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Approved by Ministry of Health</h3>
+                    <p>This platform is officially recognized and endorsed by the National Ministry of Health</p>
+                </div>
+
+                <div class="support-info">
+                    <h4><i class="fas fa-headset"></i> Need Assistance?</h4>
+                    <p>Our support team is available 24/7 to help you with registration or any questions.</p>
+                    <div class="phone-number">
+                        <i class="fas fa-phone"></i> 1-800-HEALTH
+                    </div>
+                    <p>Email: support@healthconnect.gov</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8 rounded-lg">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-hospital mr-2"></i> National e-Hospital
+                    </h3>
+                    <p class="text-gray-400">A Government of India initiative to digitize healthcare access under the
+                        Ayushman Bharat scheme.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Patients</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">How It Works</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Find Doctors</a>
+                        </li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Health Records</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Patient Support</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Hospitals</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Benefits</a>
+                        </li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Onboarding Process</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">HMIS Integration</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Technical Support</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            24x7 Helpline: 1800-123-4567</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            support@nationalehospital.gov.in</li>
+                        <li class="flex items-center text-gray-400"><i
+                                class="fas fa-map-marker-alt mr-3 text-blue-400"></i> Ministry of Health & Family
+                            Welfare, New Delhi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-gray-500 text-sm">© 2025 National e-Hospital. All rights reserved.</p>
+                    </div>
+                    <div class="flex space-x-4 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.add('drawer-open');
+        });
+
+        document.getElementById('close-menu').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.remove('drawer-open');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Form validation
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simple validation
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // In a real application, you would submit the form to a server
+            alert('Registration submitted successfully! You will receive a confirmation email shortly.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
