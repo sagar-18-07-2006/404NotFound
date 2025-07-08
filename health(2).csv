@@ -1,0 +1,157 @@
+symptoms,doctor_type,disease
+"skin_rash, oily_skin, pimples",Dermatologist,Acne
+"high_blood_pressure, headache, chest_pain",Cardiologist,Hypertension
+"blurred_vision, light_sensitivity, eye_pain",Ophthalmologist,Cataract
+"gum_bleeding, tooth_pain, swollen_gums",Dentist,Gingivitis
+"joint_pain, stiffness, swelling",Orthopedic,Osteoarthritis
+"shortness_of_breath, wheezing, chest_tightness",Pulmonologist,Asthma
+"severe_headache, nausea, sensitivity_to_light",Neurologist,Migraine
+"sadness, fatigue, lack_of_interest",Psychiatrist,Depression
+"sneezing, runny_nose, sore_throat",General Physician,Common Cold
+"dry_skin, redness, itching",Dermatologist,Eczema
+"chest_pain, dizziness, shortness_of_breath",Cardiologist,Heart Attack
+"eye_pressure, blurry_vision, eye_pain",Ophthalmologist,Glaucoma
+"loose_stools, stomach_cramps, dehydration",Gastroenterologist,Diarrhea
+"sore_throat, difficulty_swallowing, fever",ENT Specialist,Tonsillitis
+"irregular_periods, weight_gain, acne",Gynecologist,PCOD
+"burning_urination, frequent_urination, pain",Urologist,UTI
+"red_spots, fever, fatigue",General Physician,Chickenpox
+"abdominal_pain, nausea, vomiting",General Surgeon,Appendicitis
+"seizures, unconsciousness, confusion",Neurologist,Epilepsy
+"fatigue, pale_skin, shortness_of_breath",Hematologist,Anemia
+"sensitivity_to_light, blurred_vision, red_eyes",Ophthalmologist,Conjunctivitis
+"constipation, bloating, stomach_pain",Gastroenterologist,IBS
+"broken_bone, inability_to_move_limb",Orthopedic,Fracture
+"anxiety, sleeplessness, restlessness",Psychiatrist,Anxiety Disorder
+"nosebleed, sinus_pressure, nasal_congestion",ENT Specialist,Sinusitis
+"tooth_decay, cavity, mouth_pain",Dentist,Tooth Decay
+"difficulty_breathing, chronic_cough",Pulmonologist,Bronchitis
+"joint_stiffness, pain_during_movement",Orthopedic,Rheumatoid Arthritis
+"rash_with_fever, skin_irritation",Dermatologist,Measles
+"irregular_heartbeat, fatigue",Cardiologist,Arrhythmia
+"postpartum_bleeding, pelvic_pain",Gynecologist,Postpartum Complications
+"urine_retention, pelvic_pressure",Urologist,Bladder Dysfunction
+"skin_rash, oily_skin, pimples",Dermatologist,Acne
+"high_blood_pressure, headache, chest_pain",Cardiologist,Hypertension
+"blurred_vision, light_sensitivity, eye_pain",Ophthalmologist,Cataract
+"gum_bleeding, tooth_pain, swollen_gums",Dentist,Gingivitis
+"joint_pain, stiffness, swelling",Orthopedic,Osteoarthritis
+"shortness_of_breath, wheezing, chest_tightness",Pulmonologist,Asthma
+"severe_headache, nausea, sensitivity_to_light",Neurologist,Migraine
+"sadness, fatigue, lack_of_interest",Psychiatrist,Depression
+"sneezing, runny_nose, sore_throat",General Physician,Common Cold
+"dry_skin, redness, itching",Dermatologist,Eczema
+"chest_pain, dizziness, shortness_of_breath",Cardiologist,Heart Attack
+"eye_pressure, blurry_vision, eye_pain",Ophthalmologist,Glaucoma
+"loose_stools, stomach_cramps, dehydration",Gastroenterologist,Diarrhea
+"sore_throat, difficulty_swallowing, fever",ENT Specialist,Tonsillitis
+"irregular_periods, weight_gain, acne",Gynecologist,PCOD
+"burning_urination, frequent_urination, pain",Urologist,UTI
+"red_spots, fever, fatigue",General Physician,Chickenpox
+"abdominal_pain, nausea, vomiting",General Surgeon,Appendicitis
+"seizures, unconsciousness, confusion",Neurologist,Epilepsy
+"fatigue, pale_skin, shortness_of_breath",Hematologist,Anemia
+"sensitivity_to_light, blurred_vision, red_eyes",Ophthalmologist,Conjunctivitis
+"constipation, bloating, stomach_pain",Gastroenterologist,IBS
+"broken_bone, inability_to_move_limb",Orthopedic,Fracture
+"anxiety, sleeplessness, restlessness",Psychiatrist,Anxiety Disorder
+"nosebleed, sinus_pressure, nasal_congestion",ENT Specialist,Sinusitis
+"tooth_decay, cavity, mouth_pain",Dentist,Tooth Decay
+"difficulty_breathing, chronic_cough",Pulmonologist,Bronchitis
+"joint_stiffness, pain_during_movement",Orthopedic,Rheumatoid Arthritis
+"rash_with_fever, skin_irritation",Dermatologist,Measles
+"irregular_heartbeat, fatigue",Cardiologist,Arrhythmia
+"postpartum_bleeding, pelvic_pain",Gynecologist,Postpartum Complications
+"urine_retention, pelvic_pressure",Urologist,Bladder Dysfunction
+"back_pain, numbness_in_legs, difficulty_walking",Orthopedic,
+"weight_loss, fatigue, night_sweats",Oncologist,
+"persistent_cough, blood_in_sputum, chest_pain",Pulmonologist,
+"frequent_urination, excessive_thirst, blurred_vision",Endocrinologist,
+"abdominal_bloating, irregular_periods, infertility",Gynecologist,
+"ear_pain, hearing_loss, fluid_from_ear",ENT Specialist,
+"confusion, memory_loss, speech_difficulty",Neurologist,
+"itchy_scalp, flaking_skin, redness",Dermatologist,
+"bleeding_after_tooth_extraction, swollen_gums",Dentist,
+"burning_chest, sour_taste, acid_reflux",Gastroenterologist,
+"difficulty_conceiving, hormone_imbalance",Gynecologist,
+"frequent_headaches, visual_disturbances",Neurologist,
+"persistent_sadness, hopelessness, suicidal_thoughts",Psychiatrist,
+"hand_tremors, muscle_rigidity, balance_issues",Neurologist,
+"cloudy_vision, difficulty_seeing_at_night",Ophthalmologist,
+"high_fever, body_aches, fatigue",General Physician,
+"lump_in_breast, nipple_discharge",Oncologist,
+"pain_while_urinating, lower_abdominal_pain",Urologist,
+"diarrhea, bloating, gas",Gastroenterologist,
+"dry_eyes, eye_redness, blurry_vision",Ophthalmologist,
+"skin_rash, oily_skin, pimples",Dermatologist,Acne
+"high_blood_pressure, headache, chest_pain",Cardiologist,Hypertension
+"blurred_vision, light_sensitivity, eye_pain",Ophthalmologist,Cataract
+"gum_bleeding, tooth_pain, swollen_gums",Dentist,Gingivitis
+"joint_pain, stiffness, swelling",Orthopedic,Osteoarthritis
+"shortness_of_breath, wheezing, chest_tightness",Pulmonologist,Asthma
+"severe_headache, nausea, sensitivity_to_light",Neurologist,Migraine
+"sadness, fatigue, lack_of_interest",Psychiatrist,Depression
+"sneezing, runny_nose, sore_throat",General Physician,Common Cold
+"dry_skin, redness, itching",Dermatologist,Eczema
+"chest_pain, dizziness, shortness_of_breath",Cardiologist,Heart Attack
+"eye_pressure, blurry_vision, eye_pain",Ophthalmologist,Glaucoma
+"loose_stools, stomach_cramps, dehydration",Gastroenterologist,Diarrhea
+"sore_throat, difficulty_swallowing, fever",ENT Specialist,Tonsillitis
+"irregular_periods, weight_gain, acne",Gynecologist,PCOD
+"burning_urination, frequent_urination, pain",Urologist,UTI
+"red_spots, fever, fatigue",General Physician,Chickenpox
+"abdominal_pain, nausea, vomiting",General Surgeon,Appendicitis
+"seizures, unconsciousness, confusion",Neurologist,Epilepsy
+"fatigue, pale_skin, shortness_of_breath",Hematologist,Anemia
+"sensitivity_to_light, blurred_vision, red_eyes",Ophthalmologist,Conjunctivitis
+"constipation, bloating, stomach_pain",Gastroenterologist,IBS
+"broken_bone, inability_to_move_limb",Orthopedic,Fracture
+"anxiety, sleeplessness, restlessness",Psychiatrist,Anxiety Disorder
+"nosebleed, sinus_pressure, nasal_congestion",ENT Specialist,Sinusitis
+"tooth_decay, cavity, mouth_pain",Dentist,Tooth Decay
+"difficulty_breathing, chronic_cough",Pulmonologist,Bronchitis
+"joint_stiffness, pain_during_movement",Orthopedic,Rheumatoid Arthritis
+"rash_with_fever, skin_irritation",Dermatologist,Measles
+"irregular_heartbeat, fatigue",Cardiologist,Arrhythmia
+"postpartum_bleeding, pelvic_pain",Gynecologist,Postpartum Complications
+"urine_retention, pelvic_pressure",Urologist,Bladder Dysfunction
+"back_pain, numbness_in_legs, difficulty_walking",Orthopedic,
+"weight_loss, fatigue, night_sweats",Oncologist,
+"persistent_cough, blood_in_sputum, chest_pain",Pulmonologist,
+"frequent_urination, excessive_thirst, blurred_vision",Endocrinologist,
+"abdominal_bloating, irregular_periods, infertility",Gynecologist,
+"ear_pain, hearing_loss, fluid_from_ear",ENT Specialist,
+"confusion, memory_loss, speech_difficulty",Neurologist,
+"itchy_scalp, flaking_skin, redness",Dermatologist,
+"bleeding_after_tooth_extraction, swollen_gums",Dentist,
+"burning_chest, sour_taste, acid_reflux",Gastroenterologist,
+"difficulty_conceiving, hormone_imbalance",Gynecologist,
+"frequent_headaches, visual_disturbances",Neurologist,
+"persistent_sadness, hopelessness, suicidal_thoughts",Psychiatrist,
+"hand_tremors, muscle_rigidity, balance_issues",Neurologist,
+"cloudy_vision, difficulty_seeing_at_night",Ophthalmologist,
+"high_fever, body_aches, fatigue",General Physician,
+"lump_in_breast, nipple_discharge",Oncologist,
+"pain_while_urinating, lower_abdominal_pain",Urologist,
+"diarrhea, bloating, gas",Gastroenterologist,
+"dry_eyes, eye_redness, blurry_vision",Ophthalmologist,
+"nose_blockage, facial_pain, loss_of_smell",ENT Specialist,
+"dry_cough, chest_congestion, fever",Pulmonologist,
+"difficulty_reading, eye_strain, watery_eyes",Ophthalmologist,
+"skin_discoloration, scaling, severe_itching",Dermatologist,
+"sensitive_teeth, bleeding_gums, bad_breath",Dentist,
+"bone_fracture, severe_pain, swelling",Orthopedic,
+"irregular_heartbeat, chest_pressure",Cardiologist,
+"hair_loss, scalp_irritation",Dermatologist,
+"muscle_weakness, frequent_cramps",Neurologist,
+"vision_loss, halos_around_lights",Ophthalmologist,
+"pelvic_pain, menstrual_irregularities",Gynecologist,
+"involuntary_urination, urgency_to_urinate",Urologist,
+"swollen_lymph_nodes, fatigue, night_sweats",Oncologist,
+"low_back_pain, leg_pain, numbness",Orthopedic,
+"speech_difficulty, muscle_paralysis",Neurologist,
+"emotional_instability, extreme_mood_swings",Psychiatrist,
+"indigestion, heartburn, stomach_ulcer",Gastroenterologist,
+"recurrent_fever, chills, fatigue",General Physician,
+"hormonal_imbalance, fatigue, weight_gain",Endocrinologist,
+"swollen_joints, joint_stiffness",Orthopedic,
