@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- commited  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- basic boiler plate 
+      -->
+    <title>National
+
+
+        Hospital
+
+        Appointment
+        System</title>
+    <!-- title  -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- tailewind -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 
+    created hand sheet    -->
+    <!--  make thata -->
+    <style>
+        /* added */
+        :root {
+            /*root addded*/
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+        }
+
+        /*body done */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        /*gradient.png donr */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            /*card hovering done */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .drawer {
+            /* drawwer did */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .drawer {
+                transform: translateX(-100%);
+            }
+
+            /* modifyied responsive */
+            .drawer-open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<!-- /* started body */ -->
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- nav bar  -->
+    <!-- Top Navigation Bar -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <!--acv toogle buutton --> <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </div>
+                <!--we had added nav bar-->
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#features" class="hover:text-blue-200 transition">Features</a>
+                <a href="#for-patients" class="hover:text-blue-200 transition">For Patients</a>
+                <a href="#for-hospitals" class="hover:text-blue-200 transition">For Hospitals</a>
+                <a href="/welcome page/About.html" target="_blank" class="hover:text-blue-200 transition">About</a>
+            </div><!-- adding the login button  -->
+            <div>
+                <a href="/welcome page/login.html"
+                    class="bg-white text-blue-700 px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition">Login</a>
+            </div><!-- we createing  mobile drawer -->
+        </div>
+    </nav>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="drawer fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 p-4 md:hidden">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <!-- try it to be in center  -->
+
+                <!-- we created center  -->
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h2 class="text-xl font-bold text-blue-800">National e-Hospital</h2>
+            </div>
+
+            <!--adding inline css more to check-->
+            <button id="close-menu" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            <!-- make that prop -->
+        </div>
+        <nav class="space-y-4">
+            <!-- inline css is making easy  -->
+            <a href="#features"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Features</a>
+            <a href="#for-patients"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">For Patients</a>
+            <a href="#for-hospitals"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">For Hospitals</a>
+            <a href="/welcome page/About.html"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">About</a>
+            <div class="pt-4 border-t mt-4">
+                <a href="/welcome page/login.html"
+                    class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition">Login</a>
+            </div>
+            <!-- checkpoint added  -->
+        </nav>
+    </div>
+    <!-- ccreated ba==== nav barby ddeop bhaiya assistance  -->
+
+    <!-- Hero Section -->
+    <section class="relative gradient-bg text-white">
+        <div class="container  mx-auto px-4 py-20 md:py-32 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Revolutionizing Healthcare Access Nationwide</h1>
+                <p class="text-xl mb-8 leading-relaxed">Our government-recognized digital platform streamlines hospital
+                    appointments,
+
+                    reduces wait times, and improves healthcare access for all citizens.</p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="Patient_Registration.html" target="_blank"
+                        class="bg-white text-blue-700 px-6 py-3 rounded-full font-bold hover:bg-blue-50 text-center transition">Patient
+                        Registration</a>
+                    <!--registring use page will be created  -->
+                    <a href="HospitalRegistration.html" target="_blank"
+                        class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-blue-700 text-center transition">Hospital
+
+
+
+                        Onboarding</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="relative w-full max-w-lg">
+                    <img src="/assets/index html first 500x600.jpg"
+                        alt="Healthcare professionals reviewing digital patient data on tablets in a modern hospital environment"
+                        class="rounded-xl shadow-2xl border-4 border-white">
+
+                </div>
+            </div>
+            <!-- this is aboluter error occured -->
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">250+</div>
+                    <div class="text-gray-600">Partner Hospitals</div>
+
+                    <!-- created mess hey god help  -->
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">10M+</div>
+                    <!-- a bit solved i thought  -->
+                    <div class="text-gray-600">Patients Served</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">95%</div>
+                    <div class="text-gray-600">Reduced Wait
+
+
+                        Times</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">24/7</div>
+                    <div class="text-gray-600">
+                        Support
+                        Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- starting new secti =on  by  1.mins
+ it is a hell-->
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">National Digital Healthcare Platform</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Our integrated solution brings efficiency,
+                    transparency and
+
+
+
+
+                    accessibility to healthcare
+                    services across the nation</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition card-hover">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-blue-600">
+                        <i class="fas fa-calendar-check text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Unified Appointment System</h3>
+                    <p class="text-gray-600">Seamlessly book appointments at any government or empaneled private
+                        hospital with real-time availability from the National Health Database.</p>
+                </div>
+
+
+                <!-- Feature 5 -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition card-hover">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-blue-600">
+                        <i class="fas fa-mobile-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Queue Management</h3>
+                    <p class="text-gray-600">Real-time
+
+
+
+                        SMS/WhatsApp updates on your queue status and estimated wait
+                        times,
+
+
+
+                        reducing unnecessary hospital waiting.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition card-hover">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 text-blue-600">
+                        <i class="fas fa-rupee-sign text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Cashless Transactions</h3>
+                    <p class="text-gray-600">Integrated payment
+                        <!-- create d i=un intentional gaps  -->
+
+                        gateway supporting UPI, RuPay, and other
+                        government-approved payment methods for seamless
+
+
+                        transactions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Patients Section -->
+    <section id="for-patients" class="py-20 bg-blue-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <!-- my head is burning  -->
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">For Patients</h2>
+                    <p class="text-gray-600 mb-8 text-lg leading-relaxed">Access quality
+                        healthcare services from
+                        anywhere in the country with our patient-friendly
+
+                        platform designed for citizens of all
+                        technical backgrounds.</p>
+
+                    <div class="space-y-6">
+                        <!-- desginning start inline css  -->
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-4 text-blue-600">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Find the Right Specialist</h4>
+                                <p class="text-gray-600">Search by specialty, location, or hospital and view verified
+                                    doctor profiles with patient reviews.</p>
+                            </div>
+                        </div>
+                        <!-- making amore base modelm -->
+
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-4 text-blue-600">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Real-time Availability</h4>
+                                <p class="text-gray-600">See actual available slots and book instantly without phone
+                                    calls or physical visits.</p>
+                            </div>
+                            <!-- mentorship mainitn -->
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-4 text-blue-600">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div>
+                                <!-- starting reduced problems  -->
+                                <h4 class="font-bold text-gray-800 mb-1">Digital Reminders</h4>
+                                <p class="text-gray-600">Receive SMS and app notifications for upcoming appointments,
+                                    reducing no-shows.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="/welcome page/Patient_Registration.html"
+                        class="inline-block mt-8 bg-blue-600 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition">Patient
+                        Registration</a>
+                    <!-- make integration  -->
+                </div>
+
+                <div class="md:w-1/2">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <img src="/assets/Patients-600x400-1.jpg"
+                            alt="Happy elderly patient using a tablet to book a medical appointment from home with assistance from a nurse"
+                            class="w-full">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">"This system can saved your mother's life"
+                            </h3>
+                            <p class="text-gray-600 mb-4">"you
+
+                                eill be able to get
+
+                                your 72-year-old mother an immediate
+                                appointment with a
+
+                                specialist when she
+
+                                needed urgent care."</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- completed section it is  -->
+    <!-- For Hospitals Section -->
+    <section id="for-hospitals" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row-reverse items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pl-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">For Healthcare Providers</h2>
+                    <p class="text-gray-600 mb-8 text-lg leading-relaxed">Our hospital management dashboard helps
+                        healthcare institutions optimize operations and deliver better patient care with
+                        government-mandated interoperability standards.</p>
+
+                    <!-- making more vcomplex day by day  -->
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-4 text-blue-600">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <!-- why it is not working  -->
+                                <h4 class="font-bold text-gray-800 mb-1">Centralized Scheduling</h4>
+                                <p class="text-gray-600">Manage all doctor schedules, operation theaters, and diagnostic
+                                    appointments from one dashboard.</p>
+                            </div>
+                        </div>
+                        <!-- made something check it maghak di  -->
+                        ```
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-4 text-blue-600">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">HIPAA Compliant Records</h4>
+                                <p class="text-gray-600">Secure digital records with audit trails meeting national
+                                    healthcare data protection standards.</p>
+                            </div>
+                        </div>
+                        <!-- deep bhaiya checlk agauan  -->
+                    </div>
+
+                    <a href="/welcome page/HospitalRegistration.html"
+                        class="inline-block mt-8 bg-blue-600 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition">Hospital
+                        Registration</a>
+                </div>
+
+                <div class="md:w-1/2">
+                    <!-- mahak doi is it working fine  -->
+                    <div class="relative bg-blue-800 rounded-xl shadow-lg overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-900 opacity-90"></div>
+                        <div class="relative p-6 text-white">
+                            <h3 class="text-xl font-bold mb-4">Admin Dashboard Preview</h3>
+                            <div class="grid grid-cols-3 gap-4 mb-6">
+                                <div class="bg-blue-700 bg-opacity-50 p-3 rounded-lg text-center">
+                                    <div class="text-2xl font-bold">142</div>
+                                    <div class="text-sm">Today's Appointments</div>
+                                </div>
+                                <div class="bg-blue-700 bg-opacity-50 p-3 rounded-lg text-center">
+                                    <div class="text-2xl font-bold">87%</div>
+                                    <div class="text-sm">Capacity Utilization</div>
+                                </div>
+                                <div class="bg-blue-700 bg-opacity-50 p-3 rounded-lg text-center">
+                                    <div class="text-2xl font-bold">24m</div>
+                                    <div class="text-sm">Avg. Wait Time</div>
+                                </div>
+                                <!-- /dhaye dhaye kar rahe hai  -->
+                            </div>
+                            <img src="/assets/admin_dashboard.png"
+                                alt="Hospital admin dashboard showing appointment statistics, doctor schedules and patient queue management interface"
+                                class="rounded-lg border border-blue-600">
+                        </div>
+                        <!-- making  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Flow Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Streamlined Patient Journey</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Our carefully designed workflow ensures a
+                    frictionless experience for both patients and healthcare providers</p>
+            </div>
+
+            <div class="relative">
+                <!-- Timeline line -->
+                <div class="hidden md:block absolute left-1/2 h-full w-1 bg-blue-200 transform -translate-x-1/2"></div>
+
+                <!-- Step 1 -->
+                <div class="mb-12 md:flex justify-between items-center">
+                    <div class="md:w-5/12 mb-6 md:mb-0">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-blue-600 font-bold mb-2 flex items-center">
+                                <div class="bg-blue-100 w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                                    1
+                                </div>
+                                Registration & Verification
+                            </div>
+                            <p class="text-gray-600">Patients register via email (with OTP verification), ensuring
+                                secure access.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-5/12">
+                        <img src="/assets/Registration image.png"
+                            alt="Mobile screen showing patient registration form with Aadhaar verification step"
+                            class="rounded-xl shadow-sm border border-gray-200">
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="mb-12 md:flex justify-between items-center">
+                    <div class="md:w-5/12 order-last">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-blue-600 font-bold mb-2 flex items-center">
+                                <div class="bg-blue-100 w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                                    2
+                                </div>
+                                Search & Appointment Booking
+                            </div>
+                            <p class="text-gray-600">Integrated search with filters for doctor specialty, location,
+                                availability, and hospital status.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-5/12 order-first mb-6 md:mb-0">
+                        <img src="/assets/appintment image.png"
+                            alt="Appointment booking interface showing available time slots with doctors' profiles"
+                            class="rounded-xl shadow-sm border border-gray-200">
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="mb-12 md:flex justify-between items-center">
+                    <div class="md:w-5/12 mb-6 md:mb-0">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-blue-600 font-bold mb-2 flex items-center">
+                                <div class="bg-blue-100 w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                                    3
+                                </div>
+                                Queue Management
+                            </div>
+                            <p class="text-gray-600">Real-time queue status updates with
+                                estimated consultation times.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-5/12">
+                        <img src="/assets/Queue managment.png"
+                            alt="Mobile notification showing queue position and waiting time estimate"
+                            class="rounded-xl shadow-sm border border-gray-200">
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="md:flex justify-between items-center">
+                    <div class="md:w-5/12 order-last">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-blue-600 font-bold mb-2 flex items-center">
+                                <div class="bg-blue-100 w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                                    4
+                                </div>
+                                Digital Health Records
+                            </div>
+                            <p class="text-gray-600">All prescriptions and reports automatically added to the patient's
+                                National Digital Health Records.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-5/12 order-first mb-6 md:mb-0">
+                        <img src="/assets/digital records.png"
+                            alt="Electronic health record interface displaying medical history and prescriptions"
+                            class="rounded-xl shadow-sm border border-gray-200">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Call to Action -->
+    <section class="py-20 gradient-bg text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Healthcare Access?</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">This system will be able to help thousands of hospitals and
+                millions of patients book appointments nationwide.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="/welcome page/Patient_Registration.html"
+                    class="bg-white text-blue-700 px-8 py-4 rounded-full font-bold hover:bg-blue-50 transition">Patient
+                    Registration</a>
+                <!-- <a href="/hospital-demo"
+                    class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-blue-700 transition">Request
+                    Hospital Demo</a> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-hospital mr-2"></i> National e-Hospital
+                    </h3>
+                    <p class="text-gray-400">National e-Hospital: Powering Ayushman Bharat’s Vision of Universal
+                        Healthcare</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Patients</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#for-patients" class="text-gray-400 hover:text-white transition">How It Works</a>
+                        </li>
+                        <li><a href="/welcome page/login.html" class="text-gray-400 hover:text-white transition">Find
+                                Doctors</a>
+                        </li>
+                        <!-- <li><a href="/health-records" class="text-gray-400 hover:text-white transition">Health
+                                Records</a></li> -->
+                        <!-- <li><a href="/support" class="text-gray-400 hover:text-white transition">Patient Support</a>
+                        </li> -->
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Hospitals</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/hospital-benefits" class="text-gray-400 hover:text-white transition">Benefits</a>
+                        </li>
+                        <li><a href="/welcome page/HospitalRegistration.html"
+                                class="text-gray-400 hover:text-white transition">Onboarding
+                                Process</a></li>
+                        <!-- <li><a href="/hmis-integration" class="text-gray-400 hover:text-white transition">HMIS
+                                Integration</a></li> -->
+                        <!-- <li><a href="/hospital-support" class="text-gray-400 hover:text-white transition">Technical
+                                Support</a></li> -->
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            24x7 Helpline: 1800-123-4567</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            support@nationalehospital.in</li>
+                        <li class="flex items-center text-gray-400"><i
+                                class="fas fa-map-marker-alt mr-3 text-blue-400"></i> INDIA </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <img src="/assets/logo.png" alt="Government of India logo with 'Digital India' tagline"
+                            class="h-10">
+                    </div>
+                    <div class="text-gray-400 text-sm">
+                        © 2025 404NotFound All rights reserved.
+                    </div>
+                    <!-- <div class="flex space-x-4 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- JavaScript for interactive functionality --> For This
+    <script>
+        // Toggle for opening the mobile navigation menu for this document
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.add('drawer-open');
+        });
+
+        // Toggle for closing the mobile navigation menu for this 
+        document.getElementById('close-menu').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.remove('drawer-open');
+        });
+
+        // Smooth scrolling for in-page anchor links Here
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent default jump
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth' // Enable smooth scrolling Here
+                });
+            });
+        });
+
+        //Here we did  Language selector dropdown - redirects to the language version of the site
+        document.getElementById('language-selector').addEventListener('change', function () {
+            window.location.href = '/language/' + this.value; // Load new language page Here
+        });
+
+        // Here we did Accessibility: Increase text size by 1px
+        document.getElementById('increase-text').addEventListener('click', function () {
+            document.body.style.fontSize = (parseFloat(getComputedStyle(document.body).fontSize) + 1) + 'px';
+        });
+
+        // Here we did Accessibility: Decrease text size by 1px
+        document.getElementById('decrease-text').addEventListener('click', function () {
+            document.body.style.fontSize = (parseFloat(getComputedStyle(document.body).fontSize) - 1) + 'px';
+        });
+    </script>
+
+</body>
+
+</html>
