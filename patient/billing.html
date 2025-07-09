@@ -1,0 +1,630 @@
+<!DOCTYPE html> <!--we will Declares the document type and HTML version -->
+<html lang="en"> <!--we will use Root element of the HTML document with language set to English -->
+<head> <!--it will Contains meta information about the document -->
+    <meta charset="UTF-8"> <!--it will Specifies the character encoding for the document -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--it will Ensures proper rendering on mobile devices -->
+    <title>Billing - National e-Hospital</title> <!--in this we will Sets the title of the webpage -->
+    <script src="https://cdn.tailwindcss.com"></script> <!--in this we will Includes Tailwind CSS framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!--in this we will Includes Font Awesome icons -->
+    <style>
+        :root { /*in this we will Defines CSS variables for color scheme */
+            --primary: #2563eb; /*in this we will Primary blue color */
+            --secondary: #1e40af; /*in this we will Darker blue color */
+            --accent: #3b82f6; /*in this we will Accent blue color */
+            --dark: #1e3a8a; /*in this we will Dark blue color */
+            --light: #eff6ff; /*we will use Light blue color */
+            --success: #10b981; /*we will use Success green color */
+        }
+
+        body { /*in this we will do Styles the body element */
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; /*in this we will do Sets font stack */
+            background-color: #f8fafc; /*in this we will do Sets light gray background */
+        }
+
+        .gradient-bg { /*in this we will do Class for gradient background */
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); /*in this we will do Creates blue gradient */
+        }
+
+        .card-hover:hover { /*in this we will do Hover effect for cards */
+            transform: translateY(-5px); /*in this we will do Moves card up slightly */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); /*in this we will do Adds shadow effect */
+        }
+
+        .dashboard-card { /*in this we will do Styles dashboard cards */
+            transition: all 0.3s ease; /*in this we will do Adds smooth transition */
+            border-radius: 12px; /*in this we will do Rounds corners */
+            overflow: hidden; /*in this we will do Ensures content doesn't overflow */
+        }
+
+        .dashboard-card:hover { /*in this we will do Hover effect for dashboard cards */
+            transform: translateY(-5px); /*in this we will do Lifts card on hover */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); /*in this we will do Adds shadow on hover */
+        }
+
+        .sidebar-item { /*in this we will do Styles sidebar navigation items */
+            transition: all 0.2s ease; /*in this we will do Adds transition effect */
+            border-radius: 8px; /*in this we will do Rounds corners */
+            padding: 0.75rem 1rem; /*in this we will do Adds padding */
+        }
+
+        .sidebar-item:hover { /*in this we will do Hover effect for sidebar items */
+            background-color: #dbeafe; /*in this we will do Changes background on hover */
+        }
+
+        .sidebar-item.active { /*in this we will do Styles active sidebar item */
+            background-color: #3b82f6; /*in this we will do Blue background */
+            color: white; /*in this we will do White text */
+        }
+
+        .notification-dot { /*in this we will do Styles notification indicator dot */
+            width: 8px; /*in this we will do Sets width */
+            height: 8px; /*in this we will do Sets height */
+            border-radius: 50%; /*in this we will do Makes it circular */
+            background-color: #ef4444; /*in this we will do Red color */
+        }
+
+        .badge-paid { /*in this we will do Styles paid status badge */
+            background-color: #dcfce7; /*in this we will do Light green background */
+            color: #16a34a; /*in this we will do Dark green text */
+        }
+
+        .badge-pending { /*in this we will do Styles pending status badge */
+            background-color: #fffbeb; /*in this we will do Light yellow background */
+            color: #ca8a04; /*in this we will do Dark yellow text */
+        }
+
+        .badge-overdue { /*in this we will do Styles overdue status badge */
+            background-color: #fee2e2; /*in this we will do Light red background */
+            color: #dc2626; /*in this we will do Dark red text */
+        }
+
+        .payment-method { /*in this we will do Styles payment method options */
+            border: 1px solid #e5e7eb; /*in this we will do Light gray border */
+            border-radius: 8px; /*in this we will do Rounded corners */
+            padding: 16px; /*in this we will do Adds padding */
+            transition: all 0.3s ease; /*in this we will do Smooth transition */
+        }
+
+        .payment-method:hover { /*in this we will do Hover effect for payment methods */
+            border-color: var(--primary); /*in this we will do Changes border color */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /*in this we will do Adds shadow */
+        }
+
+        .payment-method.selected { /*in this we will do Styles selected payment method */
+            border-color: var(--primary); /*in this we will do Blue border */
+            background-color: #eff6ff; /*in this we will do Light blue background */
+        }
+
+        @media (max-width: 768px) { /*in this we will do Mobile responsive styles */
+            .sidebar { /*in this we will do Styles sidebar for mobile */
+                transform: translateX(-100%); /*in this we will do Hides sidebar off-screen */
+                transition: transform 0.3s ease-in-out; /*in this we will do Slide animation */
+                z-index: 50; /*in this we will do Ensures it appears above other content */
+            }
+            
+            .sidebar-open { /*in this we will do Class to show sidebar */
+                transform: translateX(0); /*in this we will do Brings sidebar into view */
+            }
+            
+            .overlay { /*in this we will do Styles overlay for mobile menu */
+                display: none; /*in this we will do Hidden by default */
+                position: fixed; /*in this we will do Covers entire screen */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5); /*in this we will do Semi-transparent black */
+                z-index: 40; /*in this we will do Below sidebar but above other content */
+            }
+            
+            .overlay-active { /*in this we will do Class to show overlay */
+                display: block; /*in this we will do Makes overlay visible */
+            }
+        }
+    </style> <!--in this we will do Ends internal CSS -->
+</head>
+
+<body class="min-h-screen flex flex-col"> <!--in this we will do Body with minimum height and flex layout -->
+    <!--in this we will do Top Navigation Bar -->
+    <nav class="gradient-bg text-white shadow-lg"> <!--in this we will do Navigation bar with gradient background -->
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center"> <!--in this we will do Container for nav content -->
+            <div class="flex items-center space-x-3"> <!--in this we will do Left side of nav -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none"> <!--in this we will do Mobile menu button -->
+                    <i class="fas fa-bars text-xl"></i> <!--in this we will do Hamburger icon -->
+                </button>
+                <div class="flex items-center"> <!--in this we will do Logo and hospital name -->
+                    <i class="fas fa-hospital text-2xl mr-2"></i> <!--in this we will do Hospital icon -->
+                    <h1 class="text-xl font-bold">National e-Hospital</h1> <!--in this we will do Hospital name -->
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4"> <!--in this we will do Right side of nav -->
+                <div class="relative"> <!--in this we will do Notification bell -->
+                    <button class="relative p-1">
+                        <i class="fas fa-bell text-xl"></i> <!--in this we will do Bell icon -->
+                        <span class="notification-dot absolute top-0 right-0"></span> <!--in this we will do Notification indicator -->
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2"> <!--in this we will do User profile -->
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10"></div> <!--in this we will do Placeholder avatar -->
+                    <div class="hidden md:block"> <!--in this we will do User info (hidden on mobile) -->
+                        <div class="font-medium">Rahul Sharma</div> <!--in this we will do User name -->
+                        <div class="text-sm text-blue-200">Patient ID: P-768934</div> <!--in this we will do Patient ID -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!--in this we will do Dashboard Content -->
+    <div class="flex flex-1"> <!--in this we will do Main content area -->
+        <!--in this we will do Mobile Overlay -->
+        <div id="overlay" class="overlay"></div> <!--in this we will do Overlay for mobile menu -->
+        
+        <!--in this we will do Sidebar -->
+        <div id="sidebar" class="sidebar bg-white w-64 min-h-screen shadow-md p-4 fixed md:relative md:translate-x-0"> <!--in this we will do Side navigation -->
+            <div class="mb-8 mt-4"> <!--in this we will do User profile section -->
+                <div class="flex items-center space-x-3 mb-6 p-3 bg-blue-50 rounded-lg"> <!--in this we will do Profile container -->
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-14 h-14"></div> <!--in this we will do Placeholder avatar -->
+                    <div> <!--in this we will do User details -->
+                        <div class="font-bold text-gray-800">Rahul Sharma</div> <!--in this we will do User name -->
+                        <div class="text-sm text-gray-600">Age: 35 | Male</div> <!--in this we will do Demographic info -->
+                    </div>
+                </div>
+                
+                <nav class="space-y-1"> <!--in this we will do Navigation links -->
+                    <a href="/patient/Patient_Dashboard.html" class="sidebar-item flex items-center space-x-3"> <!--in this we will do Dashboard link -->
+                        <i class="fas fa-home"></i> <!--in this we will do Home icon -->
+                        <span>Dashboard</span> <!--in this we will do Link text -->
+                    </a>
+                    <a href="/patient/queuestatus.html" class="sidebar-item flex items-center space-x-3"> <!--in this we will do Appointments link -->
+                        <i class="fas fa-calendar-check"></i> <!--in this we will do Calendar icon -->
+                        <span>Appointments</span> <!--in this we will do Link text -->
+                    </a>
+                    <a href="/patient/billing.html" class="sidebar-item active flex items-center space-x-3"> <!--in this we will do Billing link (active) -->
+                        <i class="fas fa-file-invoice-dollar"></i> <!--in this we will do Invoice icon -->
+                        <span>Billing</span> <!--in this we will do Link text -->
+                    </a>
+                    <a href="/patient/findspecialist.html" class="sidebar-item flex items-center space-x-3"> <!--in this we will do Find Specialist link -->
+                        <i class="fas fa-heartbeat"></i> <!--in this we will do Heartbeat icon -->
+                        <span>Find Specialist</span> <!--in this we will do Link text -->
+                    </a>
+                    <a href="/patient/FindHospital.html" class="sidebar-item flex items-center space-x-3"> <!--in this we will do Find Hospitals link -->
+                        <i class="fas fa-hospital-user"></i> <!--in this we will do Hospital icon -->
+                        <span>Find Hospitals</span> <!--in this we will do Link text -->
+                    </a>
+                    <a href="/patient/settings.html" class="sidebar-item flex items-center space-x-3"> <!--in this we will do Settings link -->
+                        <i class="fas fa-cog"></i> <!--in this we will do Cog icon -->
+                        <span>Settings</span> <!--in this we will do Link text -->
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="mt-auto p-3 bg-blue-50 rounded-lg"> <!--in this we will do Emergency contact section -->
+                <div class="text-sm font-medium text-gray-800 mb-2">Emergency Contact</div> <!--in this we will do Heading -->
+                <div class="text-red-600 font-bold flex items-center"> <!--in this we will do Emergency number -->
+                    <i class="fas fa-phone-alt mr-2"></i> <!--in this we will do Phone icon -->
+                    108 <!--in this we will do Emergency number -->
+                </div>
+                <div class="text-xs text-gray-600 mt-1">Available 24/7 for medical emergencies</div> <!--in this we will do Description -->
+            </div>
+        </div>
+        <!--in this will do Main Content -->
+        <main class="flex-1 p-4 md:p-8"> <!--in this will do Main content area with responsive padding -->
+            <!--in this will do Welcome Header -->
+            <div class="mb-8"> <!--in this will do Header section with bottom margin -->
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Billing Center</h1> <!--in this will do Main heading -->
+                <p class="text-gray-600">Manage your medical bills and payments</p> <!--in this will do Subheading -->
+            </div>
+            
+            <!--in this will do Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"> <!--in this will do Responsive 3-column grid -->
+                <!--in this will do Total Due Card -->
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm"> <!--in this will do White card component -->
+                    <div class="flex items-center"> <!--in this will do Flex container for icon and text -->
+                        <div class="p-3 bg-blue-100 rounded-full mr-4 text-blue-600"> <!--in this will do Icon container -->
+                            <i class="fas fa-file-invoice text-xl"></i> <!--in this will do Invoice icon -->
+                        </div>
+                        <div> <!--in this will do Text container -->
+                            <div class="text-2xl font-bold">₹8,250</div> <!--in this will do Amount -->
+                            <div class="text-gray-600">Total Due</div> <!--in this will do Label -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!--in this will do Paid This Month Card -->
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm"> <!--in this will do White card component -->
+                    <div class="flex items-center"> <!--in this will do Flex container for icon and text -->
+                        <div class="p-3 bg-green-100 rounded-full mr-4 text-green-600"> <!--in this will do Icon container -->
+                            <i class="fas fa-check-circle text-xl"></i> <!--in this will do Check icon -->
+                        </div>
+                        <div> <!--in this will do Text container -->
+                            <div class="text-2xl font-bold">₹12,500</div> <!--in this will do Amount -->
+                            <div class="text-gray-600">Paid This Month</div> <!--in this will do Label -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!--in this will do Upcoming Payments Card -->
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm"> <!--in this will do White card component -->
+                    <div class="flex items-center"> <!--in this will do Flex container for icon and text -->
+                        <div class="p-3 bg-yellow-100 rounded-full mr-4 text-yellow-600"> <!--in this will do Icon container -->
+                            <i class="fas fa-calendar-exclamation text-xl"></i> <!--in this will do Calendar icon -->
+                        </div>
+                        <div> <!--in this will do Text container -->
+                            <div class="text-2xl font-bold">2</div> <!--in this will do Count -->
+                            <div class="text-gray-600">Upcoming Payments</div> <!--in this will do Label -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!--in this will do Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> <!--in this will do Responsive grid layout -->
+                <!--in this will do Left Column -->
+                <div class="lg:col-span-2"> <!--in this will do Takes 2/3 width on large screens -->
+                    <!--in this will do Outstanding Bills Section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6"> <!--in this will do Card component -->
+                        <div class="flex justify-between items-center mb-6"> <!--in this will do Header row -->
+                            <h2 class="text-xl font-bold text-gray-800">Outstanding Bills</h2> <!--in this will do Section title -->
+                            <a href="#" class="text-blue-600 hover:underline">View All</a> <!--in this will do View all link -->
+                        </div>
+                        
+                        <!--in this will do Bills Table -->
+                        <div class="overflow-x-auto"> <!-- Scrollable container -->
+                            <table class="min-w-full divide-y divide-gray-200"> <!--in this will do Responsive table -->
+                                <thead class="bg-gray-50"> <!--in this will do Table header -->
+                                    <tr> <!--in this will do Header row -->
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Invoice # <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Service <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Amount <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="relative px-6 py-3"> <!--in this will do Action column -->
+                                            <span class="sr-only">Action</span> <!--in this will do Screen reader text -->
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"> <!--in this will do Table body -->
+                                    <!--in this will do First Bill Row -->
+                                    <tr class="hover:bg-gray-50"> <!--in this will do Hoverable row -->
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Invoice cell -->
+                                            <div class="text-sm font-medium text-gray-900">INV-2023-8765</div> <!--in this will do Invoice number -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Service cell -->
+                                            <div class="text-sm text-gray-900">Cardiology Consultation</div> <!--in this will do Service name -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Date cell -->
+                                            June 5, 2023 <!--in this will do Date -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> <!--in this will do Amount cell -->
+                                            ₹2,500 <!--in this will do Amount -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Status cell -->
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-pending">
+                                                Pending <!--in this will do Status badge -->
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"> <!--in this will do Action cell -->
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Pay Now</a> <!--in this will do Action link -->
+                                        </td>
+                                    </tr>
+                                    <!--in this will do Second Bill Row -->
+                                    <tr class="hover:bg-gray-50"> <!--in this will do Hoverable row -->
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Invoice cell -->
+                                            <div class="text-sm font-medium text-gray-900">INV-2023-8764</div> <!--in this will do Invoice number -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Service cell -->
+                                            <div class="text-sm text-gray-900">MRI Scan</div> <!--in this will do Service name -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Date cell -->
+                                            May 28, 2023 <!--in this will do Date -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> <!--in this will do Amount cell -->
+                                            ₹5,750 <!--in this will do Amount -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Status cell -->
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-overdue">
+                                                Overdue <!--in this will do Status badge -->
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"> <!--in this will do Action cell -->
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Pay Now</a> <!--in this will do Action link -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!--in this will do Payment History Section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6"> <!--in this will do Card component -->
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Payment History</h2> <!--in this will do Section title -->
+                        
+                        <!--in this will do Payment History Table -->
+                        <div class="overflow-x-auto"> <!--in this will do Scrollable container -->
+                            <table class="min-w-full divide-y divide-gray-200"> <!--in this will do Responsive table -->
+                                <thead class="bg-gray-50"> <!--in this will do Table header -->
+                                    <tr> <!--in this will do Header row -->
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Invoice # <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Amount <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Method <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status <!--in this will do Column header -->
+                                        </th>
+                                        <th scope="col" class="relative px-6 py-3"> <!--in this will do Action column -->
+                                            <span class="sr-only">View</span> <!--in this will do Screen reader text -->
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"> <!--in this will do Table body -->
+                                    <!--in this will do First Payment Row -->
+                                    <tr class="hover:bg-gray-50"> <!--in this will do Hoverable row -->
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Date cell -->
+                                            May 15, 2023 <!--in this will do Date -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Invoice cell -->
+                                            <div class="text-sm font-medium text-gray-900">INV-2023-8743</div> <!--in this will do Invoice number -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> <!--in this will do Amount cell -->
+                                            ₹3,200 <!--in this will do Amount -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Method cell -->
+                                            UPI <!--in this will do Payment method -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Status cell -->
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-paid">
+                                                Paid <!--in this will do Status badge -->
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"> <!--in this will do Action cell -->
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">View Receipt</a> <!--in this will do Action link -->
+                                        </td>
+                                    </tr>
+                                    <!--in this will do Second Payment Row -->
+                                    <tr class="hover:bg-gray-50"> <!--in this will do Hoverable row -->
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Date cell -->
+                                            Apr 28, 2023 <!--in this will do Date -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Invoice cell -->
+                                            <div class="text-sm font-medium text-gray-900">INV-2023-8721</div> <!--in this will do Invoice number -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> <!--in this will do Amount cell -->
+                                            ₹1,800 <!--in this will do Amount -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Method cell -->
+                                            Credit Card <!--in this will do Payment method -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Status cell -->
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-paid">
+                                                Paid <!--in this will do Status badge -->
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"> <!--in this will do Action cell -->
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">View Receipt</a> <!--in this will do Action link -->
+                                        </td>
+                                    </tr>
+                                    <!--in this will do Third Payment Row -->
+                                    <tr class="hover:bg-gray-50"> <!--in this will do Hoverable row -->
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Date cell -->
+                                            Apr 12, 2023 <!--in this will do Date -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Invoice cell -->
+                                            <div class="text-sm font-medium text-gray-900">INV-2023-8705</div> <!--in this will do Invoice number -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> <!--in this will do Amount cell -->
+                                            ₹7,500 <!--in this will do Amount -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> <!--in this will do Method cell -->
+                                            Net Banking <!--in this will do Payment method -->
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"> <!--in this will do Status cell -->
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-paid">
+                                                Paid <!--in this will do Status badge -->
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"> <!--in this will do Action cell -->
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">View Receipt</a> <!--in this will do Action link -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!--in this will do View Full History Link -->
+                        <div class="mt-6 text-center"> <!--in this will do Centered container -->
+                            <a href="#" class="text-blue-600 hover:underline font-medium">View Full Payment History</a> <!--in this will do Link -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!--in this will do Right Column -->
+                <div> <!--in this will do Takes 1/3 width on large screens -->
+                    <!--in this will do Make a Payment Section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6"> <!--in this will do Card component -->
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Make a Payment</h2> <!--in this will do Section title -->
+                        
+                        <!--in this will do Invoice Selection -->
+                        <div class="mb-6"> <!--in this will do Form group -->
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Invoice</label> <!--in this will do Label -->
+                            <select class="block w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"> <!-- Dropdown -->
+                                <option>Select an invoice to pay</option> <!--in this will do Default option -->
+                                <option>INV-2023-8765 - Cardiology Consultation (₹2,500)</option> <!--in this will do Option 1 -->
+                                <option>INV-2023-8764 - MRI Scan (₹5,750)</option> <!--in this will do Option 2 -->
+                                <option>Pay all outstanding (₹8,250)</option> <!--in this will do Option 3 -->
+                            </select>
+                        </div>
+                        
+                        <!--in this will do Payment Method Selection -->
+                        <div class="mb-6"> <!--in this will do Form group -->
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label> <!--in this will do Label -->
+                            <div class="space-y-3"> <!--in this will do Vertical spacing between options -->
+                                <!--in this will do UPI Option -->
+                                <div class="payment-method cursor-pointer flex items-center"> <!--in this will do Clickable container -->
+                                    <input type="radio" name="payment-method" id="upi" class="h-4 w-4 text-blue-600 focus:ring-blue-500"> <!--in this will do Radio button -->
+                                    <label for="upi" class="ml-3 block"> <!--in this will do Label -->
+                                        <span class="text-sm font-medium text-gray-700">UPI</span> <!--in this will do Method name -->
+                                        <span class="text-xs text-gray-500">Instant payment using UPI ID</span> <!--in this will do Description -->
+                                    </label>
+                                    <div class="ml-auto flex space-x-2"> <!--in this will do Payment provider logos -->
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Pay_%28GPay%29_Logo.svg" alt="Google Pay" class="h-6"> <!--in this will do Google Pay logo -->
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/PhonePe_Logo.svg" alt="PhonePe" class="h-6"> <!--in this will do PhonePe logo -->
+                                    </div>
+                                </div>
+                                
+                                <!--in this will do Card Option -->
+                                <div class="payment-method cursor-pointer flex items-center"> <!--in this will do Clickable container -->
+                                    <input type="radio" name="payment-method" id="card" class="h-4 w-4 text-blue-600 focus:ring-blue-500"> <!--in this will do Radio button -->
+                                    <label for="card" class="ml-3 block"> <!--in this will do Label -->
+                                        <span class="text-sm font-medium text-gray-700">Credit/Debit Card</span> <!--in this will do Method name -->
+                                        <span class="text-xs text-gray-500">Visa, Mastercard, RuPay</span> <!--in this will do Description -->
+                                    </label>
+                                    <div class="ml-auto flex space-x-2"> <!--in this will do Card provider logos -->
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-6"> <!--in this will do Visa logo -->
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-6"> <!--in this will do Mastercard logo -->
+                                    </div>
+                                </div>
+                                
+                                <!--in this will do Net Banking Option -->
+                                <div class="payment-method cursor-pointer flex items-center"> <!-- Clickable container -->
+                                    <input type="radio" name="payment-method" id="netbanking" class="h-4 w-4 text-blue-600 focus:ring-blue-500"> <!-- Radio button -->
+                                    <label for="netbanking" class="ml-3 block"> <!-- Label -->
+                                        <span class="text-sm font-medium text-gray-700">Net Banking</span> <!-- Method name -->
+                                        <span class="text-xs text-gray-500">All major banks supported</span> <!-- Small gray text for description -->
+                                    </label> <!-- Closing label tag -->
+                                </div> <!-- Closing payment method div -->
+                            </div> <!-- Closing payment methods container -->
+                        </div> <!-- Closing payment method selection section -->
+                        
+                        <div class="mt-6"> <!-- Pay button container with top margin -->
+                            <button class="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center"> <!-- Full-width blue button -->
+                                <i class="fas fa-lock mr-2"></i> Pay Securely <!-- Lock icon and text -->
+                            </button> <!-- Closing button tag -->
+                        </div> <!-- Closing button container -->
+                    </div> <!-- Closing make payment card -->
+                    
+                    <!-- Payment Methods Section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6"> <!-- White card component -->
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Payment Methods</h2> <!-- Section title -->
+                        
+                        <div class="space-y-4"> <!-- Vertical spacing between items -->
+                            <!-- Credit Card Method -->
+                            <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg"> <!-- Card method container -->
+                                <div class="flex items-center"> <!-- Left side content -->
+                                    <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600"> <!-- Icon container -->
+                                        <i class="fas fa-credit-card"></i> <!-- Credit card icon -->
+                                    </div>
+                                    <div> <!-- Text content -->
+                                        <div class="font-medium">Visa ending in 4567</div> <!-- Card info -->
+                                        <div class="text-sm text-gray-600">Expires 05/2025</div> <!-- Expiry date -->
+                                    </div>
+                                </div>
+                                <button class="text-red-600 hover:text-red-800"> <!-- Delete button -->
+                                    <i class="fas fa-trash-alt"></i> <!-- Trash icon -->
+                                </button>
+                            </div>
+                            
+                            <!-- UPI Method -->
+                            <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg"> <!-- UPI method container -->
+                                <div class="flex items-center"> <!-- Left side content -->
+                                    <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600"> <!-- Icon container -->
+                                        <i class="fas fa-mobile-alt"></i> <!-- Mobile icon -->
+                                    </div>
+                                    <div> <!-- Text content -->
+                                        <div class="font-medium">UPI: rahul@upi</div> <!-- UPI ID -->
+                                        <div class="text-sm text-gray-600">Google Pay</div> <!-- UPI app -->
+                                    </div>
+                                </div>
+                                <button class="text-red-600 hover:text-red-800"> <!-- Delete button -->
+                                    <i class="fas fa-trash-alt"></i> <!-- Trash icon -->
+                                </button>
+                            </div>
+                        </div> <!-- Closing methods list -->
+                        
+                        <!-- Add Payment Method Button -->
+                        <button class="mt-6 w-full py-3 border border-dashed border-blue-300 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition flex items-center justify-center"> <!-- Dashed border button -->
+                            <i class="fas fa-plus mr-2"></i> Add Payment Method <!-- Plus icon and text -->
+                        </button> <!-- Closing button tag -->
+                    </div> <!-- Closing payment methods card -->
+                    
+                    <!-- Insurance Information Section -->
+                    <div class="dashboard-card bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl shadow-sm p-6"> <!-- Gradient background card -->
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Insurance Information</h2> <!-- Section title -->
+                        <!-- Insurance Provider Info -->
+                        <div class="bg-white p-4 rounded-lg mb-4"> <!-- White info box -->
+                            <div class="font-medium mb-1">Health Insurance Provider</div> <!-- Label -->
+                            <p class="text-gray-600">Star Health Insurance</p> <!-- Provider name -->
+                            <p class="text-gray-600">Policy No: SHI-987654321</p> <!-- Policy number -->
+                        </div>
+                        <!-- Coverage Status -->
+                        <div class="bg-white p-4 rounded-lg"> <!-- White info box -->
+                            <div class="font-medium mb-1">Coverage Status</div> <!-- Label -->
+                            <p class="text-gray-600">Active until December 31, 2023</p> <!-- Expiry date -->
+                            <div class="mt-2"> <!-- Progress bar container -->
+                                <div class="w-full bg-gray-200 rounded-full h-2.5"> <!-- Background bar -->
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 75%"></div> <!-- Progress indicator -->
+                                </div>
+                                <div class="text-xs text-gray-600 mt-1">₹75,000 of ₹100,000 used this year</div> <!-- Usage info -->
+                            </div>
+                        </div>
+                    </div> <!-- Closing insurance card -->
+                </div> <!-- Closing right column -->
+            </div> <!-- Closing main grid -->
+        </main> <!-- Closing main content -->
+    </div> <!-- Closing flex container -->
+
+    <!-- JavaScript Section -->
+    <script> // in this we will Start of JavaScript 
+        document.addEventListener('DOMContentLoaded', function() {  //<!-- Wait for DOM to load -->
+            const menuToggle = document.getElementById('menu-toggle'); //<!-- Get menu toggle button -->
+            const sidebar = document.getElementById('sidebar'); //<!-- Get sidebar element -->
+            const overlay = document.getElementById('overlay'); //<!-- Get overlay element -->
+            
+            //in this we will make Mobile menu toggle functionality
+            menuToggle.addEventListener('click', function() { //<!--in this we will Click event for menu toggle -->
+                sidebar.classList.toggle('sidebar-open'); //<!-- Toggle sidebar visibility -->
+                overlay.classList.toggle('overlay-active'); //<!-- Toggle overlay -->
+            });
+            
+            //in this we will make Overlay click to close menu
+            overlay.addEventListener('click', function() { //<!-- Click event for overlay -->
+                sidebar.classList.remove('sidebar-open'); //<!-- Hide sidebar -->
+                overlay.classList.remove('overlay-active'); //<!-- Hide overlay -->
+            });
+            
+            //in this we will make Payment method selection functionality
+            const paymentMethods = document.querySelectorAll('.payment-method'); //<!-- Get all payment methods -->
+            paymentMethods.forEach(method => { //<!-- Loop through each payment method -->
+                method.addEventListener('click', function() { //<!-- Click event for payment method -->
+                    //in this we will Remove selected class from all methods
+                    paymentMethods.forEach(m => m.classList.remove('selected'));
+                    //in this we will Add selected class to clicked method
+                    this.classList.add('selected');
+                    //in this we will Check the radio input inside clicked method
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) radio.checked = true; //<!-- Check the radio button -->
+                });
+            });
+        });
+    </script> 
+</body> 
+</html> 
