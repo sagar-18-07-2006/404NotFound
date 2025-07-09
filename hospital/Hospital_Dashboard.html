@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .appointment-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .status-scheduled {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-in-progress {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-emergency {
+            background-color: #fecaca;
+            color: #dc2626;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .dropdown {
+            transition: all 0.3s ease;
+            transform-origin: top right;
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .dropdown-open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            border-left: 4px solid #1d4ed8;
+        }
+
+        .nav-item.active i {
+            color: #1d4ed8;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg">
+        <i class="fas fa-bars text-gray-700"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-white w-64 min-h-screen shadow-lg fixed">
+        <div class="p-4 flex items-center justify-between border-b">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">National e-Hospital</h1>
+            </div>
+        </div>
+
+        <!-- Hospital Profile -->
+        <div class="p-4 border-b">
+            <div class="flex items-center">
+                <div class="avatar mr-3">AH</div>
+                <div>
+                    <h3 class="font-bold text-gray-800">Apollo Hospital</h3>
+                    <p class="text-sm text-gray-600">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="/hospital/Hospital_Dashboard.html" class="nav-item active flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/appointment.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-calendar-check mr-3 text-gray-500"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="/hospital/" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-user-injured mr-3 text-gray-500"></i>
+                        <span>Patients</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/doctors.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-user-md mr-3 text-gray-500"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/wedsAndBeds.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-procedures mr-3 text-gray-500"></i>
+                        <span>Wards & Beds</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-pills mr-3 text-gray-500"></i>
+                        <span>Pharmacy</span>
+                    </a>
+                </li> -->
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-flask mr-3 text-gray-500"></i>
+                        <span>Laboratory</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/billing.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-gray-500"></i>
+                        <span>Billing</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="/hospital/" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-chart-line mr-3 text-gray-500"></i>
+                        <span>Reports</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/settings.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-cog mr-3 text-gray-500"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="avatar mr-3">AD</div>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">Hospital Administrator</p>
+                    </div>
+                </div>  
+                
+              <a href="/welcome page/login.html">  <button id="logout-button" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-64 transition-all duration-300">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Hospital Dashboard</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button id="notification-button" class="p-2 text-gray-500 hover:text-gray-700 relative">
+                            <i class="fas fa-bell text-xl"></i>
+                            <div class="notification-dot"></div>
+                        </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div id="notification-dropdown" class="dropdown absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border">
+                            <div class="p-3 border-b">
+                                <h3 class="font-bold text-gray-800">Notifications (3)</h3>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                <!-- Notification Item -->
+                                <a href="/hospital/notificationpage.html" class="flex items-start p-3 hover:bg-gray-50 border-b">
+                                    <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">New Appointment</h4>
+                                        <p class="text-sm text-gray-600">Rahul Sharma booked an appointment for Cardiology</p>
+                                        <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Notification Item -->
+                                <a href="/hospital/notificationpage.html" class="flex items-start p-3 hover:bg-gray-50 border-b">
+                                    <div class="bg-red-100 p-2 rounded-full mr-3 text-red-600">
+                                        <i class="fas fa-ambulance"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Emergency Case</h4>
+                                        <p class="text-sm text-gray-600">Emergency case reported at reception</p>
+                                        <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Notification Item -->
+                                <a href="/hospital/notificationpage.html" class="flex items-start p-3 hover:bg-gray-50">
+                                    <div class="bg-green-100 p-2 rounded-full mr-3 text-green-600">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Bed Available</h4>
+                                        <p class="text-sm text-gray-600">ICU bed #12 is now available</p>
+                                        <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="p-3 border-t text-center">
+                                <a href="/hospital/notificationpage.html" class="text-blue-600 text-sm font-medium">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="relative">
+                        <button id="profile-button" class="flex items-center space-x-2 focus:outline-none">
+                            <div class="avatar">AU</div>
+                            <span class="hidden md:inline font-medium">Admin User</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                        </button>
+                        
+                        <!-- Profile Dropdown -->
+                        <div id="profile-dropdown" class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 border">
+                            <div class="p-4 border-b">
+                                <div class="flex items-center">
+                                    <div class="avatar mr-3">AU</div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                                        <p class="text-xs text-gray-600">admin@apollohospital.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="/hospital/profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                                <a href="/hospital/settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                                <!-- <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Activity Log</a> -->
+                            </div>
+                            <div class="py-1 border-t">
+                                <a href="/hospital/logout.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-4">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <!-- Today's Appointments -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Today's Appointments</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">142</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 12% from yesterday
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                            <i class="fas fa-calendar-check text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Patients -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Current Patients</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">87</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 5% from yesterday
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                            <i class="fas fa-procedures text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Available Beds -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Available Beds</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">24</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-red-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-down mr-1"></i> 3 from yesterday
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-lg text-yellow-600">
+                            <i class="fas fa-bed text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Revenue Today -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Revenue Today</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">₹2,87,500</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 8% from yesterday
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                            <i class="fas fa-rupee-sign text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Recent Appointments -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Appointments Chart -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-800">Appointments Overview</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">Week</button>
+                            <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium">Month</button>
+                            <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium">Year</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <!-- This would be replaced with an actual chart library like Chart.js -->
+                        <div class="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+                            <p class="text-gray-500">Appointments Chart</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Appointments -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-800">Recent Appointments</h3>
+                        <a href="/hospital/appointment.html" class="text-blue-600 text-sm font-medium">View All</a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Appointment Item -->
+                        <div class="flex items-start p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="bg-blue-100 p-2 rounded-lg mr-3 text-blue-600">
+                                <i class="fas fa-user-injured"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Rahul Sharma</h4>
+                                    <span class="appointment-status status-scheduled">Scheduled</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Cardiology - Dr. Patel</p>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-xs text-gray-500">Today, 10:30 AM</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment Item -->
+                        <div class="flex items-start p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="bg-red-100 p-2 rounded-lg mr-3 text-red-600">
+                                <i class="fas fa-ambulance"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Priya Desai</h4>
+                                    <span class="appointment-status status-emergency">Emergency</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Emergency - Dr. Kumar</p>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-xs text-gray-500">Now</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment Item -->
+                        <div class="flex items-start p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="bg-green-100 p-2 rounded-lg mr-3 text-green-600">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Amit Patel</h4>
+                                    <span class="appointment-status status-completed">Completed</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Orthopedics - Dr. Sharma</p>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-xs text-gray-500">Today, 9:00 AM</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment Item -->
+                        <div class="flex items-start p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="bg-yellow-100 p-2 rounded-lg mr-3 text-yellow-600">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Neha Gupta</h4>
+                                    <span class="appointment-status status-in-progress">In Progress</span>
+                                </div>
+                                <p class="text-sm text-gray-600">Pediatrics - Dr. Reddy</p>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-xs text-gray-500">Today, 11:15 AM</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctors and Patients -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Active Doctors -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-800">Active Doctors</h3>
+                        <a href="/hospital/doctors.html" class="text-blue-600 text-sm font-medium">View All</a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Doctor Item -->
+                        <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="avatar mr-3">DP</div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Dr. Patel</h4>
+                                    <span class="badge badge-primary">Cardiology</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-sm text-gray-600">5 appointments today</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-phone-alt"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Doctor Item -->
+                        <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="avatar mr-3">DS</div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Dr. Sharma</h4>
+                                    <span class="badge badge-primary">Orthopedics</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-sm text-gray-600">7 appointments today</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-phone-alt"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Doctor Item -->
+                        <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="avatar mr-3">DR</div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Dr. Reddy</h4>
+                                    <span class="badge badge-primary">Pediatrics</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <p class="text-sm text-gray-600">4 appointments today</p>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-phone-alt"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Patients -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-800">Recent Patients</h3>
+                        <a href="/hospital/wedsAndBeds.html" class="text-blue-600 text-sm font-medium">View All</a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Patient Item -->
+                        <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="avatar mr-3">RS</div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Rahul Sharma</h4>
+                                    <span class="text-xs text-gray-500">ID: PAT-78945</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <div>
+                                        <span class="text-sm text-gray-600">Cardiology</span>
+                                        <span class="mx-2 text-gray-300">•</span>
+                                        <span class="text-sm text-gray-600">35 years</span>
+                                    </div>
+                                    <!-- <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient Item -->
+                        <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="avatar mr-3">PD</div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Priya Desai</h4>
+                                    <span class="text-xs text-gray-500">ID: PAT-78946</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <div>
+                                        <span class="text-sm text-gray-600">Emergency</span>
+                                        <span class="mx-2 text-gray-300">•</span>
+                                        <span class="text-sm text-gray-600">28 years</span>
+                                    </div>
+                                    <!-- <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient Item -->
+                        <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+                            <div class="avatar mr-3">AP</div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-medium text-gray-800">Amit Patel</h4>
+                                    <span class="text-xs text-gray-500">ID: PAT-78947</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-1">
+                                    <div>
+                                        <span class="text-sm text-gray-600">Orthopedics</span>
+                                        <span class="mx-2 text-gray-300">•</span>
+                                        <span class="text-sm text-gray-600">42 years</span>
+                                    </div>
+                                    <!-- <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-open');
+            });
+            
+            // Notification dropdown
+            const notificationButton = document.getElementById('notification-button');
+            const notificationDropdown = document.getElementById('notification-dropdown');
+            
+            notificationButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationDropdown.classList.toggle('dropdown-open');
+                
+                // Close other dropdowns
+                profileDropdown.classList.remove('dropdown-open');
+            });
+            
+            // Profile dropdown
+            const profileButton = document.getElementById('profile-button');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            
+            profileButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('dropdown-open');
+                
+                // Close other dropdowns
+                notificationDropdown.classList.remove('dropdown-open');
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                notificationDropdown.classList.remove('dropdown-open');
+                profileDropdown.classList.remove('dropdown-open');
+            });
+            
+            // Prevent dropdown from closing when clicking inside
+            notificationDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Logout button
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', function() {
+                // In a real app, this would redirect to logout
+                alert('You have been logged out successfully.');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

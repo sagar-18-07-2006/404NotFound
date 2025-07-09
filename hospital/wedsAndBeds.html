@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wards & Beds - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse existing styles from dashboard */
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        /* New styles for wards and beds */
+        .ward-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        
+        .ward-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .bed {
+            width: 100px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .bed:hover {
+            transform: scale(1.05);
+        }
+        
+        .bed-available {
+            background-color: #d1fae5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .bed-occupied {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+        
+        .bed-reserved {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        
+        .bed-maintenance {
+            background-color: #e5e7eb;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+        }
+        
+        .occupancy-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+        }
+        
+        .ward-icu {
+            border-left-color: #ef4444;
+        }
+        
+        .ward-general {
+            border-left-color: #3b82f6;
+        }
+        
+        .ward-maternity {
+            border-left-color: #ec4899;
+        }
+        
+        .ward-pediatrics {
+            border-left-color: #8b5cf6;
+        }
+        
+        .ward-surgery {
+            border-left-color: #f59e0b;
+        }
+        
+        .ward-card.selected {
+            border: 2px solid var(--primary);
+            background-color: #eff6ff;
+        }
+        
+        .ward-type-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg">
+        <i class="fas fa-bars text-gray-700"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-white w-64 min-h-screen shadow-lg fixed">
+        <div class="p-4 flex items-center justify-between border-b">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">National e-Hospital</h1>
+            </div>
+        </div>
+
+        <!-- Hospital Profile -->
+        <div class="p-4 border-b">
+            <div class="flex items-center">
+                <div class="avatar mr-3">AH</div>
+                <div>
+                    <h3 class="font-bold text-gray-800">Apollo Hospital</h3>
+                    <p class="text-sm text-gray-600">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="Hospital_Dashboard.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/appointment.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-calendar-check mr-3 text-gray-500"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/doctors.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-user-md mr-3 text-gray-500"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/wedsAndBeds.html" class="nav-item active flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-procedures mr-3 text-gray-500"></i>
+                        <span>Wards & Beds</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-flask mr-3 text-gray-500"></i>
+                        <span>Laboratory</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/billing.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-gray-500"></i>
+                        <span>Billing</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-chart-line mr-3 text-gray-500"></i>
+                        <span>Reports</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/settings.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-cog mr-3 text-gray-500"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="avatar mr-3">AD</div>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">Hospital Administrator</p>
+                    </div>
+                </div>
+                <button id="logout-button" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-64 transition-all duration-300">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Wards & Beds Management</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" placeholder="Search ward or bed..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex space-x-2">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Ward
+                        </button>
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-bed mr-2"></i> Add Bed
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-4">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <!-- Total Wards -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Total Wards</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">24</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 2 new this month
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                            <i class="fas fa-building-medical text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Beds -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Total Beds</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">386</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 15 new this month
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                            <i class="fas fa-bed text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Occupied Beds -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Occupied Beds</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">312</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-red-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 81% occupancy
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-lg text-red-600">
+                            <i class="fas fa-user-injured text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Available Beds -->
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-gray-500 font-medium">Available Beds</h3>
+                            <p class="text-3xl font-bold text-gray-800 mt-2">74</p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-green-500 text-sm font-medium flex items-center">
+                                    <i class="fas fa-bed mr-1"></i> 19% availability
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                            <i class="fas fa-bed text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wards and Beds Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Wards List -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Wards List</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">All</button>
+                                <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium">ICU</button>
+                                <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium">General</button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                            <!-- Ward Card -->
+                            <div class="ward-card ward-card ward-icu bg-white p-4 rounded-lg shadow-sm selected">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">Intensive Care Unit (ICU)</h4>
+                                        <div class="flex items-center mt-1">
+                                            <span class="ward-type-badge bg-red-100 text-red-800">ICU</span>
+                                            <span class="mx-2 text-gray-300">•</span>
+                                            <span class="text-sm text-gray-600">Ward #ICU-01</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl font-bold">18 <span class="text-sm font-normal text-gray-500">/ 20</span></p>
+                                        <p class="text-sm text-gray-600">beds occupied</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="occupancy-bar bg-gray-200">
+                                        <div class="progress-fill bg-red-500" style="width: 90%"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1 text-xs text-gray-500">
+                                        <span>Available: 2 beds</span>
+                                        <span>90% occupied</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Ward Card -->
+                            <div class="ward-card ward-general bg-white p-4 rounded-lg shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">General Medicine</h4>
+                                        <div class="flex items-center mt-1">
+                                            <span class="ward-type-badge bg-blue-100 text-blue-800">General</span>
+                                            <span class="mx-2 text-gray-300">•</span>
+                                            <span class="text-sm text-gray-600">Ward #GEN-03</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl font-bold">24 <span class="text-sm font-normal text-gray-500">/ 30</span></p>
+                                        <p class="text-sm text-gray-600">beds occupied</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="occupancy-bar bg-gray-200">
+                                        <div class="progress-fill bg-blue-500" style="width: 80%"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1 text-xs text-gray-500">
+                                        <span>Available: 6 beds</span>
+                                        <span>80% occupied</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Ward Card -->
+                            <div class="ward-card ward-maternity bg-white p-4 rounded-lg shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">Maternity Ward</h4>
+                                        <div class="flex items-center mt-1">
+                                            <span class="ward-type-badge bg-pink-100 text-pink-800">Maternity</span>
+                                            <span class="mx-2 text-gray-300">•</span>
+                                            <span class="text-sm text-gray-600">Ward #MAT-02</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl font-bold">14 <span class="text-sm font-normal text-gray-500">/ 20</span></p>
+                                        <p class="text-sm text-gray-600">beds occupied</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="occupancy-bar bg-gray-200">
+                                        <div class="progress-fill bg-pink-500" style="width: 70%"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1 text-xs text-gray-500">
+                                        <span>Available: 6 beds</span>
+                                        <span>70% occupied</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Ward Card -->
+                            <div class="ward-card ward-pediatrics bg-white p-4 rounded-lg shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">Pediatrics</h4>
+                                        <div class="flex items-center mt-1">
+                                            <span class="ward-type-badge bg-purple-100 text-purple-800">Pediatrics</span>
+                                            <span class="mx-2 text-gray-300">•</span>
+                                            <span class="text-sm text-gray-600">Ward #PED-01</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl font-bold">16 <span class="text-sm font-normal text-gray-500">/ 22</span></p>
+                                        <p class="text-sm text-gray-600">beds occupied</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="occupancy-bar bg-gray-200">
+                                        <div class="progress-fill bg-purple-500" style="width: 73%"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1 text-xs text-gray-500">
+                                        <span>Available: 6 beds</span>
+                                        <span>73% occupied</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Ward Card -->
+                            <div class="ward-card ward-surgery bg-white p-4 rounded-lg shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">Surgery Recovery</h4>
+                                        <div class="flex items-center mt-1">
+                                            <span class="ward-type-badge bg-yellow-100 text-yellow-800">Surgery</span>
+                                            <span class="mx-2 text-gray-300">•</span>
+                                            <span class="text-sm text-gray-600">Ward #SUR-04</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl font-bold">20 <span class="text-sm font-normal text-gray-500">/ 24</span></p>
+                                        <p class="text-sm text-gray-600">beds occupied</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="occupancy-bar bg-gray-200">
+                                        <div class="progress-fill bg-yellow-500" style="width: 83%"></div>
+                                    </div>
+                                    <div class="flex justify-between mt-1 text-xs text-gray-500">
+                                        <span>Available: 4 beds</span>
+                                        <span>83% occupied</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bed Management -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Bed Management</h3>
+                                <p class="text-sm text-gray-600 mt-1">Intensive Care Unit (ICU) - Ward #ICU-01</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium flex items-center">
+                                    <i class="fas fa-filter mr-1"></i> Filter
+                                </button>
+                                <button class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center">
+                                    <i class="fas fa-print mr-1"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Bed Status Legend -->
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-full bg-green-200 border border-green-300 mr-2"></div>
+                                <span class="text-sm text-gray-600">Available (12)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-full bg-red-200 border border-red-300 mr-2"></div>
+                                <span class="text-sm text-gray-600">Occupied (18)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-full bg-yellow-200 border border-yellow-300 mr-2"></div>
+                                <span class="text-sm text-gray-600">Reserved (3)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-full bg-gray-200 border border-gray-300 mr-2"></div>
+                                <span class="text-sm text-gray-600">Maintenance (2)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Bed Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                            <!-- Bed 1 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B01">
+                                <span>ICU-01-B01</span>
+                            </div>
+                            
+                            <!-- Bed 2 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B02">
+                                <span>ICU-01-B02</span>
+                            </div>
+                            
+                            <!-- Bed 3 -->
+                            <div class="bed bed-available" data-bed="ICU-01-B03">
+                                <span>ICU-01-B03</span>
+                            </div>
+                            
+                            <!-- Bed 4 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B04">
+                                <span>ICU-01-B04</span>
+                            </div>
+                            
+                            <!-- Bed 5 -->
+                            <div class="bed bed-reserved" data-bed="ICU-01-B05">
+                                <span>ICU-01-B05</span>
+                            </div>
+                            
+                            <!-- Bed 6 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B06">
+                                <span>ICU-01-B06</span>
+                            </div>
+                            
+                            <!-- Bed 7 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B07">
+                                <span>ICU-01-B07</span>
+                            </div>
+                            
+                            <!-- Bed 8 -->
+                            <div class="bed bed-available" data-bed="ICU-01-B08">
+                                <span>ICU-01-B08</span>
+                            </div>
+                            
+                            <!-- Bed 9 -->
+                            <div class="bed bed-maintenance" data-bed="ICU-01-B09">
+                                <span>ICU-01-B09</span>
+                            </div>
+                            
+                            <!-- Bed 10 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B10">
+                                <span>ICU-01-B10</span>
+                            </div>
+                            
+                            <!-- Bed 11 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B11">
+                                <span>ICU-01-B11</span>
+                            </div>
+                            
+                            <!-- Bed 12 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B12">
+                                <span>ICU-01-B12</span>
+                            </div>
+                            
+                            <!-- Bed 13 -->
+                            <div class="bed bed-reserved" data-bed="ICU-01-B13">
+                                <span>ICU-01-B13</span>
+                            </div>
+                            
+                            <!-- Bed 14 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B14">
+                                <span>ICU-01-B14</span>
+                            </div>
+                            
+                            <!-- Bed 15 -->
+                            <div class="bed bed-available" data-bed="ICU-01-B15">
+                                <span>ICU-01-B15</span>
+                            </div>
+                            
+                            <!-- Bed 16 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B16">
+                                <span>ICU-01-B16</span>
+                            </div>
+                            
+                            <!-- Bed 17 -->
+                            <div class="bed bed-maintenance" data-bed="ICU-01-B17">
+                                <span>ICU-01-B17</span>
+                            </div>
+                            
+                            <!-- Bed 18 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B18">
+                                <span>ICU-01-B18</span>
+                            </div>
+                            
+                            <!-- Bed 19 -->
+                            <div class="bed bed-reserved" data-bed="ICU-01-B19">
+                                <span>ICU-01-B19</span>
+                            </div>
+                            
+                            <!-- Bed 20 -->
+                            <div class="bed bed-occupied" data-bed="ICU-01-B20">
+                                <span>ICU-01-B20</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Bed Details Panel -->
+                        <div class="mt-8 bg-gray-50 rounded-lg p-4 border">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-gray-800">Bed Details</h4>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm">Assign Patient</button>
+                                    <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm">Change Status</button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-500 mb-1">Bed Information</h5>
+                                    <div class="bg-white p-3 rounded-lg">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Bed ID:</span>
+                                            <span class="font-medium">ICU-01-B01</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Status:</span>
+                                            <span class="font-medium text-red-600">Occupied</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Ward:</span>
+                                            <span class="font-medium">Intensive Care Unit (ICU)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Type:</span>
+                                            <span class="font-medium">ICU Bed with Ventilator</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-500 mb-1">Patient Information</h5>
+                                    <div class="bg-white p-3 rounded-lg">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Patient ID:</span>
+                                            <span class="font-medium">PAT-67890</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Name:</span>
+                                            <span class="font-medium">Rajesh Kumar</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Admitted:</span>
+                                            <span class="font-medium">Jul 5, 2023</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Doctor:</span>
+                                            <span class="font-medium">Dr. Sharma</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5 class="text-sm font-medium text-gray-500 mb-1">Notes</h5>
+                                <div class="bg-white p-3 rounded-lg">
+                                    <p class="text-gray-700">Patient recovering from cardiac surgery. Requires continuous monitoring. Vital signs stable.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-open');
+            });
+            
+            // Ward selection
+            const wardCards = document.querySelectorAll('.ward-card');
+            wardCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    wardCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // In a real app, this would load the bed data for the selected ward
+                    const wardName = this.querySelector('h4').textContent;
+                    document.querySelector('.text-lg + p').textContent = `${wardName} - ${this.querySelector('.text-sm.text-gray-600').textContent}`;
+                    
+                    // Show notification
+                    const notification = document.createElement('div');
+                    notification.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg';
+                    notification.textContent = `Loading beds for ${wardName}...`;
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 2000);
+                });
+            });
+            
+            // Bed selection
+            const beds = document.querySelectorAll('.bed');
+            beds.forEach(bed => {
+                bed.addEventListener('click', function() {
+                    // Remove any previous active state
+                    beds.forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
+                    
+                    // Add active state to clicked bed
+                    this.classList.add('ring-2', 'ring-blue-500');
+                    
+                    // Update bed details panel
+                    const bedId = this.getAttribute('data-bed');
+                    document.querySelector('.bg-white.p-3.rounded-lg:first-child .font-medium:last-child').textContent = bedId;
+                    
+                    // In a real app, this would fetch bed details from the server
+                    console.log(`Selected bed: ${bedId}`);
+                });
+            });
+            
+            // Logout button
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', function() {
+                alert('You have been logged out successfully.');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

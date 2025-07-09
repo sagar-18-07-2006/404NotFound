@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .login-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .login-input {
+            padding-left: 45px;
+            height: 50px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .tab-btn {
+            transition: all 0.3s;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Top Navigation Bar -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </div>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-blue-200 transition">Home</a>
+                <a href="index.html#features" class="hover:text-blue-200 transition">Features</a>
+                <a href="index.html#for-patients" class="hover:text-blue-200 transition">For Patients</a>
+                <a href="index.html#for-hospitals" class="hover:text-blue-200 transition">For Hospitals</a>
+                <a href="about.html" class="hover:text-blue-200 transition font-bold">About</a>
+            </div>
+            <div>
+                <a href="login.html"
+                    class="bg-white text-blue-700 px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="drawer fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 p-4 md:hidden">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h2 class="text-xl font-bold text-blue-800">National e-Hospital</h2>
+            </div>
+            <button id="close-menu" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="space-y-4">
+            <a href="index.html"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Home</a>
+            <a href="index.html#features"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Features</a>
+            <a href="index.html#for-patients"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">For Patients</a>
+            <a href="index.html#for-hospitals"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">For Hospitals</a>
+            <a href="about.html"
+                class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">About</a>
+            <div class="pt-4 border-t mt-4">
+                <a href="login.html"
+                    class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition">Login</a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Login Section -->
+    <section class="py-12 md:py-20 bg-gradient-to-b from-blue-50 to-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-lg mx-auto text-center mb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Sign In to Your Account</h1>
+                <p class="text-gray-600">Access your personalized healthcare dashboard and manage appointments</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden login-card">
+                    <!-- Tabs -->
+                    <div class="flex border-b">
+                        <button id="patient-tab" class="tab-btn flex-1 py-6 text-gray-700 font-medium text-lg active">
+                            <i class="fas fa-user-injured mr-2"></i>Patient Login
+                        </button>
+                        <button id="hospital-tab" class="tab-btn flex-1 py-6 text-gray-700 font-medium text-lg">
+                            <i class="fas fa-hospital mr-2"></i>Hospital Login
+                        </button>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="p-8">
+                        <!-- Patient Login Form -->
+                        <div id="patient-form" class="login-form">
+                            <form id="patient-login-form">
+                                <div class="input-group">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" class="login-input" placeholder="Email Address" required
+                                        id="patient-email">
+                                    <div class="error-message" id="patient-email-error">Please enter a valid email</div>
+                                </div>
+
+                                <div class="input-group">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" class="login-input" placeholder="Password" required
+                                        id="patient-password">
+                                    <div class="error-message" id="patient-password-error">Password must be at least 8
+                                        characters</div>
+                                </div>
+
+                                <div class="flex justify-between items-center mb-6">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="remember" class="mr-2 h-4 w-4 text-blue-600 rounded">
+                                        <label for="remember" class="text-gray-700">Remember me</label>
+                                    </div>
+                                    <a href="#" class="forgot-link">Forgot password?</a>
+                                </div>
+
+                                <button type="submit"
+                                    class="gradient-bg w-full text-white py-3 rounded-lg font-bold text-lg mb-4 hover:opacity-90 transition flex justify-center items-center">
+                                    <div class="loading-spinner" id="patient-spinner"></div>
+                                    Sign In as Patient
+                                </button>
+
+                                <div class="text-center text-gray-600">
+                                    Don't have an account? <a href="Patient_Registration.html"
+                                        class="forgot-link font-medium">Register as Patient</a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Hospital Login Form -->
+                        <div id="hospital-form" class="login-form hidden">
+                            <form id="hospital-login-form">
+                                <div class="input-group">
+                                    <i class="fas fa-id-card"></i>
+                                    <input type="text" class="login-input" placeholder="Hospital ID" required
+                                        id="hospital-id">
+                                    <div class="error-message" id="hospital-id-error">Please enter your hospital ID
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" class="login-input" placeholder="Password" required
+                                        id="hospital-password">
+                                    <div class="error-message" id="hospital-password-error">Password must be at least 8
+                                        characters</div>
+                                </div>
+
+                                <div class="flex justify-between items-center mb-6">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="remember-hospital"
+                                            class="mr-2 h-4 w-4 text-blue-600 rounded">
+                                        <label for="remember-hospital" class="text-gray-700">Remember me</label>
+                                    </div>
+                                    <a href="#" class="forgot-link">Forgot password?</a>
+                                </div>
+
+                                <button type="submit"
+                                    class="gradient-bg w-full text-white py-3 rounded-lg font-bold text-lg mb-4 hover:opacity-90 transition flex justify-center items-center">
+                                    <div class="loading-spinner" id="hospital-spinner"></div>
+                                    Sign In as Hospital
+                                </button>
+
+                                <div class="text-center text-gray-600">
+                                    Not registered yet? <a href="HospitalRegistration.html"
+                                        class="forgot-link font-medium">Register your Hospital</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Authentication Options -->
+                <div class="mt-8 text-center">
+                    <div class="relative mb-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center">
+                            <span class="bg-white px-4 text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <button
+                            class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition">
+                            <i class="fab fa-google text-red-500 text-xl"></i>
+                        </button>
+                        <button
+                            class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition">
+                            <i class="fab fa-microsoft text-blue-500 text-xl"></i>
+                        </button>
+                        <button
+                            class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition">
+                            <i class="fab fa-facebook-f text-blue-700 text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-hospital mr-2"></i> National e-Hospital
+                    </h3>
+                    <p class="text-gray-400">National e-Hospital: Powering Ayushman Bharat's Vision of Universal
+                        Healthcare</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Patients</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">How It Works</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Find Doctors</a>
+                        </li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Health
+                                Records</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Patient Support</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Hospitals</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Benefits</a>
+                        </li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Onboarding
+                                Process</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">HMIS
+                                Integration</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Technical
+                                Support</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            24x7 Helpline: 1800-123-4567</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            support@nationalehospital.gov.in</li>
+                        <li class="flex items-center text-gray-400"><i
+                                class="fas fa-map-marker-alt mr-3 text-blue-400"></i> Ministry of Health &
+                            Family Welfare, New Delhi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <div class="text-gray-500 text-sm">© 2025 404NotFound All rights reserved.</div>
+                    </div>
+                    <div class="flex space-x-4 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Login Functionality -->
+    <script>
+        // Tab switching functionality
+        const patientTab = document.getElementById('patient-tab');
+        const hospitalTab = document.getElementById('hospital-tab');
+        const patientForm = document.getElementById('patient-form');
+        const hospitalForm = document.getElementById('hospital-form');
+
+        patientTab.addEventListener('click', () => {
+            patientTab.classList.add('active');
+            hospitalTab.classList.remove('active');
+            patientForm.classList.remove('hidden');
+            hospitalForm.classList.add('hidden');
+            resetErrors();
+        });
+
+        hospitalTab.addEventListener('click', () => {
+            hospitalTab.classList.add('active');
+            patientTab.classList.remove('active');
+            hospitalForm.classList.remove('hidden');
+            patientForm.classList.add('hidden');
+            resetErrors();
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.add('drawer-open');
+        });
+
+        document.getElementById('close-menu').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.remove('drawer-open');
+        });
+
+        // Reset all error messages
+        function resetErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.previousElementSibling.classList.remove('border-red-500');
+            });
+        }
+
+        // Validate email format
+        function isValidEmail(email) {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        // Simulate database validation
+        function validateCredentials(userType, credentials) {
+            // Simulate database lookup delay
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (userType === 'patient') {
+                        // Patient credentials (demo only)
+                        const validCredentials = [
+                            { email: 'patient@example.com', password: 'patient123' },
+                            { email: 'john.doe@example.com', password: 'password123' },
+                            { email: 'sarah.smith@example.com', password: 'securepass' }
+                        ];
+
+                        const isValid = validCredentials.some(cred =>
+                            cred.email === credentials.email && cred.password === credentials.password
+                        );
+
+                        if (isValid) {
+                            resolve({
+                                success: true,
+                                message: 'Login successful',
+                                redirect: 'Patient_Dashboard.html'
+                            });
+                        } else {
+                            reject({
+                                success: false,
+                                message: 'Invalid email or password'
+                            });
+                        }
+                    } else if (userType === 'hospital') {
+                        // Hospital credentials (demo only)
+                        const validCredentials = [
+                            { id: 'hosp123', password: 'hospital123' },
+                            { id: 'medanta', password: 'securepass' },
+                            { id: 'apollo', password: 'admin123' }
+                        ];
+
+                        const isValid = validCredentials.some(cred =>
+                            cred.id === credentials.id && cred.password === credentials.password
+                        );
+
+                        if (isValid) {
+                            resolve({
+                                success: true,
+                                message: 'Login successful',
+                                redirect: 'Hospital_Dashboard.html'
+                            });
+                        } else {
+                            reject({
+                                success: false,
+                                message: 'Invalid hospital ID or password'
+                            });
+                        }
+                    }
+                }, 1500); // Simulate network delay
+            });
+        }
+
+        // Handle patient login
+        document.getElementById('patient-login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Show loading spinner
+            const spinner = document.getElementById('patient-spinner');
+            spinner.style.display = 'block';
+
+            // Get form values
+            const email = document.getElementById('patient-email').value;
+            const password = document.getElementById('patient-password').value;
+
+            // Reset errors
+            resetErrors();
+
+            // Validate inputs
+            let isValid = true;
+
+            if (!email || !isValidEmail(email)) {
+                document.getElementById('patient-email-error').style.display = 'block';
+                document.getElementById('patient-email').classList.add('border-red-500');
+                isValid = false;
+            }
+
+            if (!password || password.length < 8) {
+                document.getElementById('patient-password-error').style.display = 'block';
+                document.getElementById('patient-password').classList.add('border-red-500');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                spinner.style.display = 'none';
+                return;
+            }
+
+            // Simulate database validation
+            validateCredentials('patient', { email, password })
+                .then(response => {
+                    // Redirect to patient dashboard on success
+                    window.location.href = response.redirect;
+                })
+                .catch(error => {
+                    // Show error message
+                    alert(error.message);
+                    spinner.style.display = 'none';
+                });
+        });
+        // Store credentials in localStorage
+        function storeCredentials(userType, credentials) {
+            localStorage.setItem('currentUser', JSON.stringify({
+                type: userType,
+                credentials: credentials
+            }));
+        }
+
+        // In patient login handler:
+        validateCredentials('patient', { email, password })
+            .then(response => {
+                storeCredentials('patient', { email, name: email.split('@')[0] });
+                // ... rest of code
+            });
+
+        // In hospital login handler:
+        validateCredentials('hospital', { id, password })
+            .then(response => {
+                storeCredentials('hospital', {
+                    id,
+                    name: "Apollo Hospital",
+                    location: "Mumbai, Maharashtra"
+                });
+                // ... rest of code
+            });
+        // Handle hospital login
+        document.getElementById('hospital-login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Show loading spinner
+            const spinner = document.getElementById('hospital-spinner');
+            spinner.style.display = 'block';
+
+            // Get form values
+            const id = document.getElementById('hospital-id').value;
+            const password = document.getElementById('hospital-password').value;
+
+            // Reset errors
+            resetErrors();
+
+            // Validate inputs
+            let isValid = true;
+
+            if (!id) {
+                document.getElementById('hospital-id-error').style.display = 'block';
+                document.getElementById('hospital-id').classList.add('border-red-500');
+                isValid = false;
+            }
+
+            if (!password || password.length < 8) {
+                document.getElementById('hospital-password-error').style.display = 'block';
+                document.getElementById('hospital-password').classList.add('border-red-500');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                spinner.style.display = 'none';
+                return;
+            }
+
+            // Simulate database validation
+            validateCredentials('hospital', { id, password })
+                .then(response => {
+                    // Redirect to hospital dashboard on success
+                    window.location.href = response.redirect;
+                })
+                .catch(error => {
+                    // Show error message
+                    alert(error.message);
+                    spinner.style.display = 'none';
+                });
+        });
+    </script>
+</body>
+
+</html>

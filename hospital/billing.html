@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Management - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+                z-index: 50;
+                height: 100vh;
+            }
+
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .appointment-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .status-scheduled {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-in-progress {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-emergency {
+            background-color: #fecaca;
+            color: #dc2626;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .dropdown {
+            transition: all 0.3s ease;
+            transform-origin: top right;
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .dropdown-open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            border-left: 4px solid #1d4ed8;
+        }
+
+        .nav-item.active i {
+            color: #1d4ed8;
+        }
+
+        /* Custom styles for billing page */
+        .bill-item {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .bill-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .payment-status-paid {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .payment-status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .payment-status-partial {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .payment-status-overdue {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .bill-form-container {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .service-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .service-item:hover {
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg">
+        <i class="fas fa-bars text-gray-700"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-white w-64 min-h-screen shadow-lg fixed">
+        <div class="p-4 flex items-center justify-between border-b">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">National e-Hospital</h1>
+            </div>
+        </div>
+
+        <!-- Hospital Profile -->
+        <div class="p-4 border-b">
+            <div class="flex items-center">
+                <div class="avatar mr-3">AH</div>
+                <div>
+                    <h3 class="font-bold text-gray-800">Apollo Hospital</h3>
+                    <p class="text-sm text-gray-600">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="/hospital/Hospital_Dashboard.html"
+                        class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital//appointment.html"
+                        class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-calendar-check mr-3 text-gray-500"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/doctors.html"
+                        class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-user-md mr-3 text-gray-500"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/wedsAndBeds.html"
+                        class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-procedures mr-3 text-gray-500"></i>
+                        <span>Wards & Beds</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-flask mr-3 text-gray-500"></i>
+                        <span>Laboratory</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/billing.html"
+                        class="nav-item active flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-blue-600"></i>
+                        <span>Billing</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-chart-line mr-3 text-gray-500"></i>
+                        <span>Reports</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/settings.html"
+                        class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-cog mr-3 text-gray-500"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="avatar mr-3">AD</div>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">Hospital Administrator</p>
+                    </div>
+                </div>
+                <button id="logout-button" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-64 transition-all duration-300">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Billing Management</h2>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" placeholder="Search bills..."
+                            class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button id="notification-button" class="p-2 text-gray-500 hover:text-gray-700 relative">
+                            <i class="fas fa-bell text-xl"></i>
+                            <div class="notification-dot"></div>
+                        </button>
+                    </div>
+
+                    <!-- User Profile -->
+                    <div class="relative">
+                        <button id="profile-button" class="flex items-center space-x-2 focus:outline-none">
+                            <div class="avatar">AU</div>
+                            <span class="hidden md:inline font-medium">Admin User</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                            <!-- Add this profile dropdown structure -->
+                            <div id="profile-dropdown"
+                                class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 border">
+                                <div class="p-4 border-b">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">AU</div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Admin User</h3>
+                                            <p class="text-xs text-gray-600">admin@apollohospital.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-1">
+                                    <a href="/hospital/profile.html"
+                                        class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                                    <a href="/hospital/settings.html"
+                                        class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                                </div>
+                                <div class="py-1 border-t">
+                                    <a href="/hospital/logout.html"
+                                        class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+                                </div>
+                            </div>
+                    </div>
+                    </button>
+                </div>
+            </div>
+    </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="p-4">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Total Revenue -->
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-gray-500 font-medium">Total Revenue</h3>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">₹12,87,500</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-green-500 text-sm font-medium flex items-center">
+                                <i class="fas fa-arrow-up mr-1"></i> 18% from last month
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                        <i class="fas fa-rupee-sign text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Payments -->
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-gray-500 font-medium">Pending Payments</h3>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">₹2,45,000</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-red-500 text-sm font-medium flex items-center">
+                                <i class="fas fa-arrow-up mr-1"></i> 8% from last month
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-lg text-yellow-600">
+                        <i class="fas fa-clock text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overdue Payments -->
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-gray-500 font-medium">Overdue Payments</h3>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">₹78,500</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-red-500 text-sm font-medium flex items-center">
+                                <i class="fas fa-arrow-down mr-1"></i> 12% from last month
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-red-100 p-3 rounded-lg text-red-600">
+                        <i class="fas fa-exclamation-circle text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Revenue -->
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-gray-500 font-medium">Today's Revenue</h3>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">₹87,500</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-green-500 text-sm font-medium flex items-center">
+                                <i class="fas fa-arrow-up mr-1"></i> 5% from yesterday
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                        <i class="fas fa-calendar-day text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Controls -->
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+            <div class="flex items-center space-x-3">
+                <button id="new-bill-button"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center">
+                    <i class="fas fa-file-invoice mr-2"></i> Create New Bill
+                </button>
+                <button
+                    class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg flex items-center">
+                    <i class="fas fa-download mr-2"></i> Export
+                </button>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>All Status</option>
+                        <option>Paid</option>
+                        <option>Pending</option>
+                        <option>Partial</option>
+                        <option>Overdue</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <input type="text" placeholder="Search..."
+                        class="border rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bills Table -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Bill ID</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Patient</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Services</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Amount</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- Bill 1 -->
+                    <tr class="bill-item">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">#INV-2023-001</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="avatar mr-3">RS</div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Rahul Sharma</div>
+                                    <div class="text-xs text-gray-500">ID: PAT-78945</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">15 Nov 2023</div>
+                            <div class="text-xs text-gray-500">10:30 AM</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">Cardiology Consultation, ECG</div>
+                            <div class="text-xs text-gray-500">2 services</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">₹2,500</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full payment-status-paid">Paid</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Bill 2 -->
+                    <tr class="bill-item">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">#INV-2023-002</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="avatar mr-3">PD</div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Priya Desai</div>
+                                    <div class="text-xs text-gray-500">ID: PAT-78946</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">16 Nov 2023</div>
+                            <div class="text-xs text-gray-500">11:45 AM</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">Emergency Room, X-Ray, Medication</div>
+                            <div class="text-xs text-gray-500">3 services</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">₹8,750</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                                class="px-2 py-1 text-xs font-medium rounded-full payment-status-pending">Pending</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Bill 3 -->
+                    <tr class="bill-item">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">#INV-2023-003</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="avatar mr-3">AP</div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Amit Patel</div>
+                                    <div class="text-xs text-gray-500">ID: PAT-78947</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">17 Nov 2023</div>
+                            <div class="text-xs text-gray-500">09:15 AM</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">Orthopedic Consultation, MRI Scan</div>
+                            <div class="text-xs text-gray-500">2 services</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">₹6,500</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                                class="px-2 py-1 text-xs font-medium rounded-full payment-status-overdue">Overdue</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Bill 4 -->
+                    <tr class="bill-item">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">#INV-2023-004</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="avatar mr-3">NG</div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Neha Gupta</div>
+                                    <div class="text-xs text-gray-500">ID: PAT-78948</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">18 Nov 2023</div>
+                            <div class="text-xs text-gray-500">02:30 PM</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">Pediatric Consultation, Blood Test</div>
+                            <div class="text-xs text-gray-500">2 services</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">₹1,800</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full payment-status-paid">Paid</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Bill 5 -->
+                    <tr class="bill-item">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">#INV-2023-005</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="avatar mr-3">SM</div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Sanjay Mehta</div>
+                                    <div class="text-xs text-gray-500">ID: PAT-78949</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">19 Nov 2023</div>
+                            <div class="text-xs text-gray-500">04:00 PM</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">Surgery, 3-Day Ward Stay, Medications</div>
+                            <div class="text-xs text-gray-500">5 services</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">₹42,300</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                                class="px-2 py-1 text-xs font-medium rounded-full payment-status-partial">Partial</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Revenue Chart -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Revenue Overview</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">Week</button>
+                        <button
+                            class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium">Month</button>
+                        <button
+                            class="px-3 py-1 bg-white border text-gray-700 rounded-lg text-sm font-medium">Year</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Payment Status Chart -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Payment Status Distribution</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="paymentStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+    </div>
+
+    <!-- Create Bill Modal -->
+    <div id="bill-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl bill-form-container">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">Create New Bill</h3>
+                    <button id="close-bill-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="bill-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="patient" class="block text-sm font-medium text-gray-700 mb-1">Patient</label>
+                            <div class="relative">
+                                <select id="patient"
+                                    class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="">Select a patient</option>
+                                    <option value="PAT-78945">Rahul Sharma</option>
+                                    <option value="PAT-78946">Priya Desai</option>
+                                    <option value="PAT-78947">Amit Patel</option>
+                                    <option value="PAT-78948">Neha Gupta</option>
+                                    <option value="PAT-78949">Sanjay Mehta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="bill-date" class="block text-sm font-medium text-gray-700 mb-1">Bill
+                                Date</label>
+                            <input type="date" id="bill-date"
+                                class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Services</label>
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4" id="service-list">
+                                <!-- Services will be populated dynamically -->
+                                <div
+                                    class="service-item flex items-center justify-between p-3 bg-white rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">Consultation</div>
+                                        <div class="text-sm text-gray-600">₹500</div>
+                                    </div>
+                                    <button type="button" class="add-service text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div
+                                    class="service-item flex items-center justify-between p-3 bg-white rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">ECG</div>
+                                        <div class="text-sm text-gray-600">₹1,200</div>
+                                    </div>
+                                    <button type="button" class="add-service text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div
+                                    class="service-item flex items-center justify-between p-3 bg-white rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">X-Ray</div>
+                                        <div class="text-sm text-gray-600">₹800</div>
+                                    </div>
+                                    <button type="button" class="add-service text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div
+                                    class="service-item flex items-center justify-between p-3 bg-white rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">Blood Test</div>
+                                        <div class="text-sm text-gray-600">₹300</div>
+                                    </div>
+                                    <button type="button" class="add-service text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div
+                                    class="service-item flex items-center justify-between p-3 bg-white rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">MRI Scan</div>
+                                        <div class="text-sm text-gray-600">₹5,000</div>
+                                    </div>
+                                    <button type="button" class="add-service text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                                <div
+                                    class="service-item flex items-center justify-between p-3 bg-white rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">Ward Stay (per day)</div>
+                                        <div class="text-sm text-gray-600">₹2,500</div>
+                                    </div>
+                                    <button type="button" class="add-service text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Selected Services</label>
+                        <div class="border rounded-lg overflow-hidden">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Service</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Price</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Quantity</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Total</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selected-services" class="bg-white divide-y divide-gray-200">
+                                    <!-- Selected services will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="subtotal" class="block text-sm font-medium text-gray-700">Subtotal</label>
+                                <input type="text" readonly id="subtotal"
+                                    class="w-full py-2 px-3 border border-gray-300 bg-gray-100 rounded-md shadow-sm sm:text-sm"
+                                    value="₹0.00">
+                            </div>
+                            <div>
+                                <label for="discount" class="block text-sm font-medium text-gray-700">Discount</label>
+                                <div class="flex">
+                                    <input type="number" id="discount" min="0" max="100"
+                                        class="w-full py-2 px-3 border border-gray-300 bg-white rounded-l-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                        value="0">
+                                    <span
+                                        class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="tax" class="block text-sm font-medium text-gray-700">Tax</label>
+                                <div class="flex">
+                                    <input type="number" id="tax" min="0"
+                                        class="w-full py-2 px-3 border border-gray-300 bg-white rounded-l-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                        value="18">
+                                    <span
+                                        class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="total" class="block text-sm font-medium text-gray-700">Total Amount</label>
+                                <input type="text" readonly id="total"
+                                    class="w-full py-2 px-3 border border-gray-300 bg-gray-100 rounded-md shadow-sm font-bold text-lg sm:text-sm"
+                                    value="₹0.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                        <textarea id="notes" rows="3"
+                            class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Additional notes about this bill"></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="cancel-bill"
+                            class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                            Create Bill
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add this code inside the existing DOMContentLoaded event listener
+
+            // Profile dropdown
+            const profileButton = document.getElementById('profile-button');
+            const profileDropdown = document.getElementById('profile-dropdown');
+
+            if (profileButton && profileDropdown) {
+                profileButton.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('dropdown-open');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function () {
+                    profileDropdown.classList.remove('dropdown-open');
+                });
+
+                // Prevent dropdown from closing when clicking inside
+                profileDropdown.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+            }
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+
+            mobileMenuButton.addEventListener('click', function () {
+                sidebar.classList.toggle('sidebar-open');
+            });
+
+            // Bill modal functionality
+            const newBillButton = document.getElementById('new-bill-button');
+            const billModal = document.getElementById('bill-modal');
+            const closeBillModal = document.getElementById('close-bill-modal');
+            const cancelBill = document.getElementById('cancel-bill');
+
+            newBillButton.addEventListener('click', function () {
+                billModal.classList.remove('hidden');
+            });
+
+            closeBillModal.addEventListener('click', function () {
+                billModal.classList.add('hidden');
+            });
+
+            cancelBill.addEventListener('click', function () {
+                billModal.classList.add('hidden');
+            });
+
+            // Add service functionality
+            const addServiceButtons = document.querySelectorAll('.add-service');
+            const selectedServices = document.getElementById('selected-services');
+
+            addServiceButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const serviceItem = this.closest('.service-item');
+                    const serviceName = serviceItem.querySelector('.font-medium').textContent;
+                    const servicePrice = parseFloat(serviceItem.querySelector('.text-sm').textContent.replace('₹', '').replace(',', ''));
+
+                    // Check if service already added
+                    const existingService = Array.from(selectedServices.children).find(row => {
+                        return row.querySelector('.service-name').textContent === serviceName;
+                    });
+
+                    if (existingService) {
+                        // Increase quantity
+                        const quantityInput = existingService.querySelector('.quantity-input');
+                        quantityInput.value = parseInt(quantityInput.value) + 1;
+                        updateServiceTotal(existingService);
+                    } else {
+                        // Add new service
+                        const newRow = document.createElement('tr');
+                        newRow.className = 'service-row';
+                        newRow.innerHTML = `
+                            <td class="px-4 py-3 service-name">${serviceName}</td>
+                            <td class="px-4 py-3 service-price">₹${servicePrice.toLocaleString('en-IN')}</td>
+                            <td class="px-4 py-3">
+                                <input type="number" min="1" value="1" class="quantity-input w-16 py-1 px-2 border rounded text-center" data-price="${servicePrice}">
+                            </td>
+                            <td class="px-4 py-3 service-total">₹${servicePrice.toLocaleString('en-IN')}</td>
+                            <td class="px-4 py-3 text-right">
+                                <button type="button" class="remove-service text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        selectedServices.appendChild(newRow);
+
+                        // Add event to remove button
+                        newRow.querySelector('.remove-service').addEventListener('click', function () {
+                            newRow.remove();
+                            calculateTotal();
+                        });
+
+                        // Add event to quantity input
+                        newRow.querySelector('.quantity-input').addEventListener('change', function () {
+                            updateServiceTotal(newRow);
+                        });
+                    }
+
+                    calculateTotal();
+                });
+            });
+
+            // Update service total
+            function updateServiceTotal(row) {
+                const price = parseFloat(row.querySelector('.service-price').textContent.replace('₹', '').replace(',', ''));
+                const quantity = parseInt(row.querySelector('.quantity-input').value);
+                const total = price * quantity;
+                row.querySelector('.service-total').textContent = `₹${total.toLocaleString('en-IN')}`;
+                calculateTotal();
+            }
+
+            // Calculate total bill
+            function calculateTotal() {
+                let subtotal = 0;
+                document.querySelectorAll('.service-row').forEach(row => {
+                    const total = parseFloat(row.querySelector('.service-total').textContent.replace('₹', '').replace(',', ''));
+                    subtotal += total;
+                });
+
+                const discount = parseFloat(document.getElementById('discount').value) || 0;
+                const tax = parseFloat(document.getElementById('tax').value) || 0;
+
+                const discountAmount = subtotal * (discount / 100);
+                const afterDiscount = subtotal - discountAmount;
+                const taxAmount = afterDiscount * (tax / 100);
+                const total = afterDiscount + taxAmount;
+
+                document.getElementById('subtotal').value = `₹${subtotal.toLocaleString('en-IN')}`;
+                document.getElementById('total').value = `₹${total.toLocaleString('en-IN')}`;
+            }
+
+            // Add event listeners to discount and tax inputs
+            document.getElementById('discount').addEventListener('input', calculateTotal);
+            document.getElementById('tax').addEventListener('input', calculateTotal);
+
+            // Form submission
+            document.getElementById('bill-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                billModal.classList.add('hidden');
+
+                // Show success message
+                alert('Bill created successfully!');
+
+                // Reset form
+                this.reset();
+                selectedServices.innerHTML = '';
+                calculateTotal();
+            });
+
+            // Charts
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: [55000, 62000, 48000, 71000, 89000, 76000, 93000],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Payment Status Chart
+            const paymentCtx = document.getElementById('paymentStatusChart').getContext('2d');
+            const paymentChart = new Chart(paymentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Pending', 'Partial', 'Overdue'],
+                    datasets: [{
+                        data: [62, 18, 12, 8],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#ef4444'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

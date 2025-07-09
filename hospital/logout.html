@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logged Out - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-check {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success), #0da271);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--dark));
+            transform: translateY(-2px);
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: rotate(180deg);
+        }
+
+        .wave svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+        }
+
+        .wave .shape-fill {
+            fill: rgba(37, 99, 235, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="wave">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+        </svg>
+    </div>
+    
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
+        <div class="py-6 px-8 text-center">
+            <div class="success-check">
+                <i class="fas fa-check text-white text-4xl"></i>
+            </div>
+            
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">You've been logged out</h1>
+            <p class="text-gray-600 mb-8">
+                You have successfully logged out of your account. For security reasons, please close your browser if you're on a shared device.
+            </p>
+            
+            <div class="space-y-4">
+                <a href="index.html" class="login-button block w-full py-3 rounded-lg text-white font-semibold shadow-lg">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Log In Again
+                </a>
+                
+                <a href="/welcome page/login.html" class="block py-3 rounded-lg border border-gray-300 font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fas fa-arrow-left mr-2"></i> Return to login
+                </a>
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 py-4 px-8 border-t border-gray-200">
+           <a href="/welcome page/index.html"> <div class="flex items-center justify-center">
+                <i class="fas fa-hospital text-xl text-blue-600 mr-2"></i>
+                <h2 class="text-lg font-bold text-gray-800">National e-Hospital</h2>
+            </div></a>
+            <p class="text-center text-sm text-gray-600 mt-2">
+                Secure Hospital Management System
+            </p>
+        </div>
+    </div>
+</body>
+</html>

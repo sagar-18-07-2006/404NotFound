@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - National e-Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .dropdown {
+            transition: all 0.3s ease;
+            transform-origin: top right;
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .dropdown-open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            border-left: 4px solid #1d4ed8;
+        }
+
+        .nav-item.active i {
+            color: #1d4ed8;
+        }
+        
+        .notification-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .notification-item:hover {
+            background-color: #f9fafb;
+            border-left-color: var(--primary);
+        }
+        
+        .notification-unread {
+            background-color: #f0f9ff;
+            border-left-color: var(--primary);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-type-appointment {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+        
+        .notification-type-emergency {
+            background-color: #fee2e2;
+            color: #ef4444;
+            animation: pulse 2s infinite;
+        }
+        
+        .notification-type-bed {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .notification-type-lab {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .notification-type-billing {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+        
+        .notification-type-system {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .notification-container {
+            display: none;
+        }
+        
+        .notification-container.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg">
+        <i class="fas fa-bars text-gray-700"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-white w-64 min-h-screen shadow-lg fixed">
+        <div class="p-4 flex items-center justify-between border-b">
+         <a href="/hospital/Hospital_Dashboard.html">   <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">National e-Hospital</h1>
+            </div></a>
+        </div>
+
+        <!-- Hospital Profile -->
+        <div class="p-4 border-b">
+            <div class="flex items-center">
+                <div class="avatar mr-3">AH</div>
+                <div>
+                    <h3 class="font-bold text-gray-800">Apollo Hospital</h3>
+                    <p class="text-sm text-gray-600">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="/hospital/Hospital_Dashboard.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/appointment.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-calendar-check mr-3 text-gray-500"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/doctors.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-user-md mr-3 text-gray-500"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/wedsAndBeds.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-procedures mr-3 text-gray-500"></i>
+                        <span>Wards & Beds</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-pills mr-3 text-gray-500"></i>
+                        <span>Pharmacy</span>
+                    </a>
+                </li> -->
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-flask mr-3 text-gray-500"></i>
+                        <span>Laboratory</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/billing.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-gray-500"></i>
+                        <span>Billing</span>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-chart-line mr-3 text-gray-500"></i>
+                        <span>Reports</span>
+                    </a>
+                </li> -->
+                 <!-- <li>
+                    <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-chart-line mr-3 text-gray-500"></i>
+                        <span>Reports</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/hospital/settings.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-cog mr-3 text-gray-500"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="avatar mr-3">AD</div>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">Hospital Administrator</p>
+                    </div>
+                </div>
+                <button id="logout-button" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-64 transition-all duration-300">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Notifications</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" placeholder="Search notifications..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" id="search-input">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button id="notification-button" class="p-2 text-gray-500 hover:text-gray-700 relative">
+                            <i class="fas fa-bell text-xl"></i>
+                            <div class="notification-dot"></div>
+                        </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div id="notification-dropdown" class="dropdown absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border">
+                            <div class="p-3 border-b">
+                                <h3 class="font-bold text-gray-800">Notifications (3)</h3>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                <!-- Notification Item -->
+                                <a href="/hospital/notificationpage.html" class="flex items-start p-3 hover:bg-gray-50 border-b">
+                                    <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">New Appointment</h4>
+                                        <p class="text-sm text-gray-600">Rahul Sharma booked an appointment for Cardiology</p>
+                                        <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Notification Item -->
+                                <a href="/hospital/notificationpage.html" class="flex items-start p-3 hover:bg-gray-50 border-b">
+                                    <div class="bg-red-100 p-2 rounded-full mr-3 text-red-600">
+                                        <i class="fas fa-ambulance"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Emergency Case</h4>
+                                        <p class="text-sm text-gray-600">Emergency case reported at reception</p>
+                                        <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                                    </div>
+                                </a>
+                                
+                                <!-- Notification Item -->
+                                <a href="/hospital/notificationpage.html" class="flex items-start p-3 hover:bg-gray-50">
+                                    <div class="bg-green-100 p-2 rounded-full mr-3 text-green-600">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Bed Available</h4>
+                                        <p class="text-sm text-gray-600">ICU bed #12 is now available</p>
+                                        <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="p-3 border-t text-center">
+                                <a href="/hospital/notificationpage.html" class="text-blue-600 text-sm font-medium">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="relative">
+                        <button id="profile-button" class="flex items-center space-x-2 focus:outline-none">
+                            <div class="avatar">AU</div>
+                            <span class="hidden md:inline font-medium">Admin User</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                        </button>
+                        
+                        <!-- Profile Dropdown -->
+                        <div id="profile-dropdown" class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 border">
+                            <div class="p-4 border-b">
+                                <div class="flex items-center">
+                                    <div class="avatar mr-3">AU</div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                                        <p class="text-xs text-gray-600">admin@apollohospital.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="/hospital/profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                                <a href="/hospital/settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                                <!-- <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Activity Log</a> -->
+                            </div>
+                            <div class="py-1 border-t">
+                                <a href="/hospital/logout.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-4">
+            <!-- Notification Controls -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold text-gray-800">All Notifications</h3>
+                        <p class="text-gray-600">Manage and review all system notifications</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button id="mark-all-read" class="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition">
+                            <i class="fas fa-check-circle mr-2"></i>Mark All as Read
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filter Tabs -->
+                <div class="mt-6 flex flex-wrap gap-2">
+                    <button class="filter-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-full font-medium transition active" data-filter="all">
+                        All Notifications
+                    </button>
+                    <button class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium hover:bg-gray-200 transition" data-filter="appointment">
+                        <i class="fas fa-calendar-check mr-2"></i>Appointments
+                    </button>
+                    <button class="filter-btn px-4 py-2 bg-red-100 text-red-700 rounded-full font-medium hover:bg-red-200 transition" data-filter="emergency">
+                        <i class="fas fa-ambulance mr-2"></i>Emergencies
+                    </button>
+                    <button class="filter-btn px-4 py-2 bg-green-100 text-green-700 rounded-full font-medium hover:bg-green-200 transition" data-filter="bed">
+                        <i class="fas fa-bed mr-2"></i>Beds & Wards
+                    </button>
+                    <button class="filter-btn px-4 py-2 bg-yellow-100 text-yellow-700 rounded-full font-medium hover:bg-yellow-200 transition" data-filter="lab">
+                        <i class="fas fa-flask mr-2"></i>Lab Reports
+                    </button>
+                    <button class="filter-btn px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-medium hover:bg-purple-200 transition" data-filter="billing">
+                        <i class="fas fa-file-invoice mr-2"></i>Billing
+                    </button>
+                    <button class="filter-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium hover:bg-gray-200 transition" data-filter="unread">
+                        <i class="fas fa-envelope mr-2"></i>Unread Only
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Notifications List -->
+            <div id="all-notifications" class="notification-container active">
+                <!-- Date Header -->
+                <div class="bg-gray-50 px-6 py-3 border-b">
+                    <h4 class="font-bold text-gray-700">Today</h4>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item notification-unread border-b" data-type="appointment">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-appointment mr-4">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">New Appointment Booked</h4>
+                                <span class="text-xs text-gray-500">10:25 AM</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Rahul Sharma booked an appointment with Dr. Patel in Cardiology for today at 10:30 AM</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Details
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item notification-unread border-b" data-type="emergency">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-emergency mr-4">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Emergency Case Reported</h4>
+                                <span class="text-xs text-gray-500">09:45 AM</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Priority 1 emergency case reported at reception. Patient: Priya Desai, 28 years</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Details
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item border-b" data-type="bed">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-bed mr-4">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Bed Available</h4>
+                                <span class="text-xs text-gray-500">08:30 AM</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">ICU bed #12 in Ward 3 is now available. Patient discharged successfully.</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Details
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date Header -->
+                <div class="bg-gray-50 px-6 py-3 border-b">
+                    <h4 class="font-bold text-gray-700">Yesterday</h4>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item border-b" data-type="lab">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-lab mr-4">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Lab Report Ready</h4>
+                                <span class="text-xs text-gray-500">Yesterday, 4:15 PM</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Blood test results for patient Amit Patel (ID: PAT-78947) are now available</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Report
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item border-b" data-type="billing">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-billing mr-4">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Payment Received</h4>
+                                <span class="text-xs text-gray-500">Yesterday, 2:30 PM</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Payment of ₹12,500 received for Invoice #INV-2023-0789 (Patient: Neha Gupta)</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Invoice
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item border-b" data-type="appointment">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-appointment mr-4">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Appointment Cancelled</h4>
+                                <span class="text-xs text-gray-500">Yesterday, 11:20 AM</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Sanjay Verma cancelled his appointment with Dr. Reddy in Pediatrics for today</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Details
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date Header -->
+                <div class="bg-gray-50 px-6 py-3 border-b">
+                    <h4 class="font-bold text-gray-700">This Week</h4>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item border-b" data-type="bed">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-bed mr-4">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Ward Maintenance Scheduled</h4>
+                                <span class="text-xs text-gray-500">3 days ago</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Maintenance scheduled for Ward 2 on Friday from 2:00 PM to 4:00 PM</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Schedule
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item border-b" data-type="lab">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-lab mr-4">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Lab Equipment Calibration</h4>
+                                <span class="text-xs text-gray-500">4 days ago</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Quarterly calibration for hematology analyzer completed successfully</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Report
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Item -->
+                <div class="notification-item notification-unread border-b" data-type="billing">
+                    <div class="flex items-start p-4">
+                        <div class="notification-icon notification-type-billing mr-4">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-bold text-gray-800">Insurance Claim Processed</h4>
+                                <span class="text-xs text-gray-500">5 days ago</span>
+                            </div>
+                            <p class="text-gray-600 mt-1">Insurance claim for patient Rajiv Mehta (ID: PAT-78950) has been approved</p>
+                            <div class="mt-2 flex space-x-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-eye mr-1"></i> View Details
+                                </button>
+                                <button class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    <i class="fas fa-times mr-1"></i> Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="bg-white rounded-xl shadow-sm p-12 text-center hidden">
+                <div class="mx-auto w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-bell-slash text-blue-600 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">No notifications found</h3>
+                <p class="text-gray-600 max-w-md mx-auto mb-6">There are no notifications matching your current filters. Try adjusting your filter settings.</p>
+                <button id="reset-filters" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+                    <i class="fas fa-redo mr-2"></i>Reset Filters
+                </button>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+                <nav class="inline-flex rounded-md shadow">
+                    <a href="#" class="py-2 px-3 rounded-l-md border bg-white text-gray-500 hover:bg-gray-50">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <a href="#" class="py-2 px-4 border-t border-b bg-white text-blue-600 font-medium">1</a>
+                    <a href="#" class="py-2 px-4 border-t border-b border-l bg-white text-gray-500 hover:bg-gray-50">2</a>
+                    <a href="#" class="py-2 px-4 border-t border-b border-l bg-white text-gray-500 hover:bg-gray-50">3</a>
+                    <a href="#" class="py-2 px-3 border border-l-0 rounded-r-md bg-white text-gray-500 hover:bg-gray-50">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-open');
+            });
+            
+            // Notification dropdown
+            const notificationButton = document.getElementById('notification-button');
+            const notificationDropdown = document.getElementById('notification-dropdown');
+            
+            notificationButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationDropdown.classList.toggle('dropdown-open');
+                
+                // Close other dropdowns
+                profileDropdown.classList.remove('dropdown-open');
+            });
+            
+            // Profile dropdown
+            const profileButton = document.getElementById('profile-button');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            
+            profileButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('dropdown-open');
+                
+                // Close other dropdowns
+                notificationDropdown.classList.remove('dropdown-open');
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                notificationDropdown.classList.remove('dropdown-open');
+                profileDropdown.classList.remove('dropdown-open');
+            });
+            
+            // Prevent dropdown from closing when clicking inside
+            notificationDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Logout button
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', function() {
+                // In a real app, this would redirect to logout
+                alert('You have been logged out successfully.');
+                window.location.href = 'index.html';
+            });
+            
+            // Mark all as read
+            const markAllRead = document.getElementById('mark-all-read');
+            markAllRead.addEventListener('click', function() {
+                const unreadItems = document.querySelectorAll('.notification-unread');
+                unreadItems.forEach(item => {
+                    item.classList.remove('notification-unread');
+                });
+                
+                // Also remove notification dot
+                const notificationDot = document.querySelector('.notification-dot');
+                if (notificationDot) {
+                    notificationDot.style.display = 'none';
+                }
+                
+                alert('All notifications marked as read.');
+            });
+            
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const notificationItems = document.querySelectorAll('.notification-item');
+            const allNotifications = document.getElementById('all-notifications');
+            const emptyState = document.getElementById('empty-state');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    let visibleCount = 0;
+                    
+                    // Show/hide notifications based on filter
+                    notificationItems.forEach(item => {
+                        const itemType = item.getAttribute('data-type');
+                        const isUnread = item.classList.contains('notification-unread');
+                        
+                        if (filter === 'all') {
+                            item.style.display = 'flex';
+                            visibleCount++;
+                        } 
+                        else if (filter === 'unread') {
+                            if (isUnread) {
+                                item.style.display = 'flex';
+                                visibleCount++;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                        else if (itemType === filter) {
+                            item.style.display = 'flex';
+                            visibleCount++;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    
+                    // Show/hide date headers based on visible items
+                    const dateHeaders = document.querySelectorAll('.bg-gray-50');
+                    dateHeaders.forEach(header => {
+                        const nextSibling = header.nextElementSibling;
+                        if (nextSibling && nextSibling.style.display === 'none') {
+                            header.style.display = 'none';
+                        } else {
+                            header.style.display = 'block';
+                        }
+                    });
+                    
+                    // Show empty state if no notifications are visible
+                    if (visibleCount === 0) {
+                        allNotifications.style.display = 'none';
+                        emptyState.classList.remove('hidden');
+                    } else {
+                        allNotifications.style.display = 'block';
+                        emptyState.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Reset filters
+            const resetFilters = document.getElementById('reset-filters');
+            resetFilters.addEventListener('click', function() {
+                // Reset all filters
+                filterButtons.forEach(btn => {
+                    if (btn.getAttribute('data-filter') === 'all') {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Show all notifications
+                notificationItems.forEach(item => {
+                    item.style.display = 'flex';
+                });
+                
+                // Show all date headers
+                document.querySelectorAll('.bg-gray-50').forEach(header => {
+                    header.style.display = 'block';
+                });
+                
+                // Hide empty state
+                allNotifications.style.display = 'block';
+                emptyState.classList.add('hidden');
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleCount = 0;
+                
+                notificationItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Show/hide date headers based on visible items
+                const dateHeaders = document.querySelectorAll('.bg-gray-50');
+                dateHeaders.forEach(header => {
+                    const nextSibling = header.nextElementSibling;
+                    if (nextSibling && nextSibling.style.display === 'none') {
+                        header.style.display = 'none';
+                    } else {
+                        header.style.display = 'block';
+                    }
+                });
+                
+                // Show empty state if no notifications match search
+                if (visibleCount === 0 && searchTerm !== '') {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
