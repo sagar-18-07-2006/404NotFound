@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- We are defining the document's character encoding and viewport settings -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- We are setting the title of the page -->
+    <title>User Profile | Account Settings</title>
+    
+    <!-- We are linking the Font Awesome library for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- We are starting the internal CSS styling -->
+    <style>
+        /* We are resetting default margins, padding and setting box-sizing for all elements */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* We are styling the body with a gradient background and centering content */
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* We are styling the main profile container */
+        .profile-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* We are styling the profile header section */
+        .profile-header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 40px 30px 80px;
+            position: relative;
+        }
+        
+        /* We are styling the header content layout */
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* We are styling the welcome text in the header */
+        .welcome-text h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-text p {
+            opacity: 0.8;
+            font-size: 18px;
+        }
+        
+        /* We are styling the profile action buttons container */
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* We are creating base button styles */
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        /* We are styling the primary button variant */
+        .btn-primary {
+            background: #ffffff;
+            color: #4b6cb7;
+        }
+        
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+        
+        /* We are styling the danger button variant */
+        .btn-danger {
+            background: #ff4d4d;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+        }
+        
+        /* We are styling the profile info section */
+        .profile-info {
+            display: flex;
+            padding: 0 30px;
+            transform: translateY(-50px);
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        /* We are styling the profile picture container */
+        .profile-pic {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 5px solid white;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* We are styling the profile image */
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* We are styling the initials fallback when no image is present */
+        .profile-pic .initials {
+            font-size: 60px;
+            font-weight: bold;
+            color: #4b6cb7;
+        }
+        
+        /* We are styling the profile details section */
+        .profile-details {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* We are styling section titles */
+        .section-title {
+            font-size: 22px;
+            color: #182848;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* We are creating a grid layout for user information */
+        .user-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        /* We are styling individual info items */
+        .info-item {
+            margin-bottom: 15px;
+        }
+        
+        /* We are styling info labels */
+        .info-label {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        /* We are styling info values */
+        .info-value {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        /* We are styling the profile statistics section */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        /* We are styling statistic cards */
+        .stat-card {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(to right, #e3eeff, #f8f9ff);
+        }
+        
+        /* We are styling statistic values */
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4b6cb7;
+            margin-bottom: 5px;
+        }
+        
+        /* We are styling statistic labels */
+        .stat-label {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        /* We are styling the logout modal overlay */
+        .logout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* We are styling the active state of the logout modal */
+        .logout-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* We are styling the modal content */
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        /* We are animating the modal content when active */
+        .logout-modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        /* We are styling the modal icon */
+        .modal-icon {
+            font-size: 60px;
+            color: #ff4d4d;
+            margin-bottom: 20px;
+        }
+        
+        /* We are styling the modal title */
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        /* We are styling the modal text */
+        .modal-text {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        /* We are styling the modal action buttons */
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        /* We are styling the secondary button variant */
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        /* We are adding responsive styles for tablet devices */
+        @media (max-width: 768px) {
+            .profile-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .profile-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* We are adding responsive styles for mobile devices */
+        @media (max-width: 480px) {
+            .profile-header {
+                padding: 30px 20px 70px;
+            }
+            
+            .profile-details {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .profile-pic {
+                width: 140px;
+                height: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- We are creating the main profile container -->
+    <div class="profile-container">
+        <!-- We are creating the profile header section -->
+        <div class="profile-header">
+            <div class="header-content">
+                <div class="welcome-text">
+                    <h1>Welcome back, Sarah Johnson!</h1>
+                    <p>Manage your profile and account settings</p>
+                </div>
+                <div class="profile-actions">
+                    <!-- We are adding a link to the settings page -->
+                    <a href="/patient/settings.html"> <button class="btn btn-primary">
+                        <i class="fas fa-cog"></i> Settings
+                    </button></a>
+                    <!-- We are adding a link to the logout page -->
+                    <a href="/patient/logOut.html">  <button class="btn btn-danger" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- We are creating the profile information section -->
+        <div class="profile-info">
+            <!-- We are creating the profile picture container -->
+            <div class="profile-pic">
+                <div class="initials">SJ</div>
+            </div>
+            
+            <!-- We are creating the profile details section -->
+            <div class="profile-details">
+                <h2 class="section-title">Personal Information</h2>
+                
+                <!-- We are creating a grid layout for user information -->
+                <div class="user-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value">Rahul Sharma</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value">RahulSharma@example.com</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone Number</div>
+                        <div class="info-value">+91 1234567890</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Location</div>
+                        <div class="info-value">Jaipur ,Rajasthan</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Member Since</div>
+                        <div class="info-value">July 9, 2025</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Login</div>
+                        <div class="info-value">Today, 09:24 AM</div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">Account Statistics</h2>
+                
+                <!-- We are creating a grid layout for account statistics -->
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">128</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Active Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">256</div>
+                        <div class="stat-label">Connections</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- We are creating the logout confirmation modal -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <!-- We are adding a link to the login page -->
+            <a href="/welcome page/login.html"><h2 class="modal-title">Confirm Logout</h2></a>
+            <p class="modal-text">Are you sure you want to log out? You'll need to sign in again to access your account.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelLogout">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-danger" id="confirmLogout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- We are adding JavaScript functionality -->
+    <script>
+        // We are getting references to DOM elements
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const cancelLogout = document.getElementById('cancelLogout');
+        const confirmLogout = document.getElementById('confirmLogout');
+        
+        // We are adding click event listener to the logout button
+        logoutBtn.addEventListener('click', () => {
+            logoutModal.classList.add('active');
+        });
+        
+        // We are adding click event listener to cancel logout button
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.classList.remove('active');
+        });
+        
+        // We are adding click event listener to confirm logout button
+        confirmLogout.addEventListener('click', () => {
+            // We are showing an alert to simulate logout
+            alert('Logout successful! Redirecting to login page...');
+            logoutModal.classList.remove('active');
+            
+            // We are simulating redirect after a delay
+            setTimeout(() => {
+                document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color:white;">
+                    <h1 style="font-size: 36px; margin-bottom: 20px;">Logged Out Successfully</h1>
+                    <p style="font-size: 18px;">You have been logged out of your account.</p>
+                    <button onclick="window.location.reload()" style="margin-top:30px; padding:12px 30px; background:white; border:none; border-radius:50px; color:#4b6cb7; font-weight:bold; cursor:pointer;">
+                        Return to Profile
+                    </button>
+                </div>
+                `;
+            }, 800);
+        });
+        
+        // We are adding click event listener to close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

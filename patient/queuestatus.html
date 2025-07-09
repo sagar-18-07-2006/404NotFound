@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- We are defining the document's metadata and linking external resources -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Status - National e-Hospital</title>
+    
+    <!-- We are including Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- We are including Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- We are defining custom styles for our application -->
+    <style>
+        /* We are setting up CSS variables for consistent theming */
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        /* We are setting the base font and background color */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* We are creating a gradient background class */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* We are adding transition effects for the mobile drawer */
+        .drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* We are styling the queue cards with a left border */
+        .queue-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        /* We are adding hover effects to queue cards */
+        .queue-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are creating modifier classes for different queue card types */
+        .queue-card.emergency {
+            border-left-color: var(--danger);
+        }
+
+        .queue-card.priority {
+            border-left-color: var(--warning);
+        }
+
+        .queue-card.completed {
+            border-left-color: var(--success);
+        }
+
+        /* We are styling the progress bar container */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+        }
+
+        /* We are styling the progress bar fill */
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            transition: width 0.5s ease;
+        }
+
+        /* We are styling status badges */
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        /* We are creating different badge color schemes */
+        .badge-waiting {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-in-progress {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-cancelled {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-emergency {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-priority {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        /* We are creating a pulsing animation for emergency alerts */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        /* We are adding responsive styles for mobile devices */
+        @media (max-width: 768px) {
+            .drawer {
+                transform: translateX(-100%);
+            }
+
+            .drawer-open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- We are creating the top navigation bar -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <!-- We are adding a mobile menu toggle button -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </div>
+            </div>
+            <!-- We are creating desktop navigation links -->
+            <div class="hidden md:flex space-x-6">
+                <a href="/patient/Patient_Dashboard.html" class="hover:text-blue-200 transition">Home</a>
+                <a href="BookAppointment.html" class="hover:text-blue-200 transition">Book Appointment</a>
+            </div>
+            <!-- We are adding the user profile section -->
+            <a href="/patient/profilepage.html"><div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="relative p-1">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8"></div>
+                    <div class="hidden md:block">
+                        <div class="text-sm">Patient ID: P-768934</div>
+                    </div>
+                </div>
+            </div></a>
+        </div>
+    </nav>
+
+    <!-- We are creating a mobile drawer menu -->
+    <div class="drawer fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 p-4 md:hidden">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h2 class="text-xl font-bold text-blue-800">National e-Hospital</h2>
+            </div>
+            <!-- We are adding a close button for the mobile menu -->
+            <button id="close-menu" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <!-- We are creating mobile navigation links -->
+        <nav class="space-y-4">
+            <a href="/patient/Patient_Dashboard.html" class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Home</a>
+            <a href="BookAppointment.html" class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Book Appointment</a>
+            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">My Appointments</a>
+            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600">Medical Records</a>
+            <div class="pt-4 border-t mt-4">
+                <a href="#"
+                    class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition">Logout</a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- We are creating the main content area -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- We are creating the left column for queue information -->
+            <div class="md:w-2/3">
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">
+                            <i class="fas fa-clock text-blue-600 mr-2"></i>Current Queue Status
+                        </h2>
+                        <div class="text-sm text-gray-600">
+                            Last updated: <span id="last-updated">Just now</span>
+                        </div>
+                    </div>
+
+                    <!-- We are creating the current appointment card -->
+                    <div class="queue-card bg-white rounded-lg border border-gray-200 p-6 mb-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-bold text-lg">Dr. Priya Singh</h3>
+                                <p class="text-gray-600">Cardiologist</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-blue-600">Today, 10:30 AM</div>
+                                <span class="status-badge badge-in-progress">In Progress</span>
+                            </div>
+                        </div>
+                        
+                        <!-- We are adding a progress bar for queue position -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Your position in queue</span>
+                                <span>Estimated wait time: 15-20 mins</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- We are showing token information -->
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm">
+                                <span class="font-medium">Current Token:</span> 
+                                <span class="text-blue-600">T-45</span>
+                            </div>
+                            <div class="text-sm">
+                                <span class="font-medium">Your Token:</span> 
+                                <span class="text-blue-600">T-49</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- We are creating a queue information section -->
+                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                            <i class="fas fa-info-circle text-blue-600 mr-2"></i>Queue Information
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <div class="text-gray-600">Total Patients Ahead</div>
+                                <div class="font-bold">4</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-600">Average Consultation Time</div>
+                                <div class="font-bold">8-10 mins</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-600">Current Consultation Rate</div>
+                                <div class="font-bold">6 patients/hour</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-600">Estimated Wait Time</div>
+                                <div class="font-bold">15-20 mins</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- We are adding an emergency alert notice -->
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-red-800">Emergency Notice</h4>
+                                <div class="mt-1 text-sm text-red-700">
+                                    <p>Emergency cases may be prioritized, which could affect wait times. Thank you for your understanding.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- We are creating a recent activity section -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-history text-blue-600 mr-2"></i>Recent Activity
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                                <div>
+                                    <div class="font-medium">Token T-44 completed</div>
+                                    <div class="text-sm text-gray-600">2 minutes ago</div>
+                                </div>
+                                <div class="text-green-600">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                                <div>
+                                    <div class="font-medium">Token T-45 called</div>
+                                    <div class="text-sm text-gray-600">5 minutes ago</div>
+                                </div>
+                                <div class="text-blue-600">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                                <div>
+                                    <div class="font-medium">Emergency case prioritized</div>
+                                    <div class="text-sm text-gray-600">10 minutes ago</div>
+                                </div>
+                                <div class="text-red-600">
+                                    <i class="fas fa-ambulance"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- We are creating the right column for additional information -->
+            <div class="md:w-1/3">
+                <!-- We are adding an upcoming appointments section -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>Upcoming Appointments
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start p-3 border border-gray-200 rounded-lg">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">Dr. Amit Patel</div>
+                                <div class="text-sm text-gray-600 mb-1">Orthopedic Surgeon</div>
+                                <div class="text-sm">
+                                    <span class="font-medium">June 15, 2:00 PM</span> - 
+                                    <span class="text-blue-600">Apollo Hospital</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-3 border border-gray-200 rounded-lg">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">Dr. Neha Gupta</div>
+                                <div class="text-sm text-gray-600 mb-1">Dermatologist</div>
+                                <div class="text-sm">
+                                    <span class="font-medium">June 20, 11:15 AM</span> - 
+                                    <span class="text-blue-600">Max Healthcare</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="BookAppointment.html" class="text-blue-600 text-sm font-medium hover:underline flex items-center">
+                            <i class="fas fa-plus mr-1"></i> Book New Appointment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- We are adding a notifications section -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-bell text-blue-600 mr-2"></i>Notifications
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Your appointment is coming up</div>
+                                <div class="text-sm text-gray-600">Dr. Priya Singh at 10:30 AM today</div>
+                                <div class="text-xs text-gray-500 mt-1">30 minutes ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Appointment confirmed</div>
+                                <div class="text-sm text-gray-600">Dr. Amit Patel on June 15</div>
+                                <div class="text-xs text-gray-500 mt-1">2 days ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">New test results available</div>
+                                <div class="text-sm text-gray-600">Blood test from May 28</div>
+                                <div class="text-xs text-gray-500 mt-1">3 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="#" class="text-blue-600 text-sm font-medium hover:underline">View All Notifications</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- We are creating the footer section -->
+    <footer class="bg-gray-900 text-white pt-12 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-hospital mr-2"></i> National e-Hospital
+                    </h3>
+                    <p class="text-gray-400">A Government of India initiative to digitize healthcare access under the
+                        Ayushman Bharat scheme.</p>
+                </div>
+
+                <div>
+                    <!-- Placeholder for future quick links -->
+                </div>
+
+                <div>
+                    <!-- Placeholder for future support links -->
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-phone-alt mr-3 text-blue-400"></i> 24x7 Helpline: 1800-123-4567
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-envelope mr-3 text-blue-400"></i> support@nationalehospital.in
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-map-marker-alt mr-3 text-blue-400"></i> INDIA
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center">
+                <p class="text-gray-400">© 2025 National e-Hospital. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- We are adding JavaScript functionality -->
+    <script>
+        // We are adding functionality for the mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.add('drawer-open');
+        });
+
+        document.getElementById('close-menu').addEventListener('click', function () {
+            document.querySelector('.drawer').classList.remove('drawer-open');
+        });
+
+        // We are simulating queue status updates
+        function updateQueueStatus() {
+            const lastUpdated = document.getElementById('last-updated');
+            const now = new Date();
+            lastUpdated.textContent = now.toLocaleTimeString();
+            
+            // In a real application, this would fetch data from an API
+            setTimeout(updateQueueStatus, 30000); // Update every 30 seconds
+        }
+        
+        // We are initializing the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            updateQueueStatus();
+        });
+    </script>
+</body>
+
+</html>

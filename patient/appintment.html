@@ -1,0 +1,959 @@
+Here's the properly formatted HTML file with detailed comments for each section:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- We are defining the document's metadata and linking external resources -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - National e-Hospital</title>
+    
+    <!-- We are including Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- We are including Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- We are including Flatpickr for date picker functionality -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <!-- We are defining custom styles for our application -->
+    <style>
+        /* We are setting up CSS variables for consistent theming */
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        /* We are setting base styles for the body */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* We are creating a gradient background class */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* We are styling the sidebar with transition effects */
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        /* We are making the sidebar responsive for mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: absolute;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        /* We are adding hover effects for cards */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling badge components */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* We are creating different badge color variants */
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* We are styling appointment status indicators */
+        .appointment-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* We are creating different status color variants */
+        .status-scheduled {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-in-progress {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        /* We are adding special styling for emergency status with animation */
+        .status-emergency {
+            background-color: #fecaca;
+            color: #dc2626;
+            animation: pulse 2s infinite;
+        }
+
+        /* We are defining a pulse animation for emergency status */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* We are styling notification indicators */
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* We are styling avatar placeholders */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        /* We are styling dropdown menus with transitions */
+        .dropdown {
+            transition: all 0.3s ease;
+            transform-origin: top right;
+            transform: scale(0);
+            opacity: 0;
+            position: absolute;
+            right: 0;
+            z-index: 50;
+        }
+
+        /* We are defining the open state for dropdowns */
+        .dropdown-open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* We are styling active navigation items */
+        .nav-item.active {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            border-left: 4px solid #1d4ed8;
+        }
+
+        /* We are styling icons within active nav items */
+        .nav-item.active i {
+            color: #1d4ed8;
+        }
+        
+        /* We are adding hover effects for table rows */
+        .table-row:hover {
+            background-color: #f8fafc;
+        }
+        
+        /* We are adding transitions for filter cards */
+        .filter-card {
+            transition: all 0.3s ease;
+        }
+        
+        /* We are styling action buttons with hover effects */
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        
+        /* We are adding scale effect on button hover */
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* We are positioning calendar icons in input fields */
+        .calendar-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #94a3b8;
+        }
+
+        /* We are defining primary button styles */
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        /* We are adding hover effects for primary buttons */
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        /* We are defining outline button styles */
+        .btn-outline {
+            background-color: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        /* We are adding hover effects for outline buttons */
+        .btn-outline:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- We are creating a mobile menu toggle button -->
+    <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg">
+        <i class="fas fa-bars text-gray-700"></i>
+    </button>
+
+    <!-- We are building the sidebar navigation -->
+    <div class="sidebar bg-white w-64 min-h-screen shadow-lg fixed">
+        <div class="p-4 flex items-center justify-between border-b">
+            <div class="flex items-center">
+                <i class="fas fa-hospital text-2xl text-blue-600 mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">National e-Hospital</h1>
+            </div>
+        </div>
+
+        <!-- We are displaying the hospital profile section -->
+        <div class="p-4 border-b">
+            <div class="flex items-center">
+                <div class="avatar mr-3">AH</div>
+                <div>
+                    <h3 class="font-bold text-gray-800">Apollo Hospital</h3>
+                    <p class="text-sm text-gray-600">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- We are creating the main navigation menu -->
+        <nav class="p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="Hospital_Dashboard.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/appointment.html" class="nav-item active flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-calendar-check mr-3 text-blue-600"></i>
+                        <span class="text-blue-600">Appointments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/doctors.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-user-md mr-3 text-gray-500"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/wedsAndBeds.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-procedures mr-3 text-gray-500"></i>
+                        <span>Wards & Beds</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/billing.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-gray-500"></i>
+                        <span>Billing</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hospital/settings.html" class="nav-item flex items-center p-3 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-cog mr-3 text-gray-500"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- We are adding a footer with user info and logout -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="avatar mr-3">AD</div>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">Hospital Administrator</p>
+                    </div>
+                </div>
+                <a href="/welcome page/login.html">
+                    <button id="logout-button" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- We are creating the main content area -->
+    <div class="ml-0 md:ml-64 transition-all duration-300">
+        <!-- We are building the top navigation bar -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Appointments</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- We are adding a search input -->
+                    <div class="relative">
+                        <input type="text" placeholder="Search appointments..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- We are adding a notifications button -->
+                    <div class="relative">
+                        <button id="notification-button" class="p-2 text-gray-500 hover:text-gray-700 relative">
+                            <i class="fas fa-bell text-xl"></i>
+                            <div class="notification-dot"></div>
+                        </button>
+                    </div>
+                    
+                    <!-- We are adding a user profile dropdown -->
+                    <div class="relative">
+                        <button id="profile-button" class="flex items-center space-x-2 focus:outline-none">
+                            <div class="avatar">AU</div>
+                            <span class="hidden md:inline font-medium">Admin User</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                        </button>
+                        
+                        <!-- We are building the profile dropdown content -->
+                        <div id="profile-dropdown" class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 border">
+                            <div class="p-4 border-b">
+                                <div class="flex items-center">
+                                    <div class="avatar mr-3">AU</div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                                        <p class="text-xs text-gray-600">admin@apollohospital.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="/hospital/profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                                <a href="/hospital/settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                            </div>
+                            <div class="py-1 border-t">
+                                <a href="/welcome page/login.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- We are creating the main content section -->
+        <main class="p-4">
+            <!-- We are building the filters and actions section -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">Manage Appointments</h3>
+                        <p class="text-gray-600">View and manage all appointments</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="btn-outline flex items-center" id="filter-toggle">
+                            <i class="fas fa-filter mr-2"></i> Filters
+                        </button>
+                        <button class="btn-outline flex items-center" id="export-button">
+                            <i class="fas fa-download mr-2"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- We are creating filter options that can be toggled -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6" id="filter-options">
+                    <!-- Status filter dropdown -->
+                    <div class="filter-card">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" id="status-filter">
+                            <option value="all">All Statuses</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Emergency">Emergency</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Date range picker -->
+                    <div class="filter-card relative">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                        <input type="text" class="w-full border rounded-lg p-2 pl-3 pr-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Select date range" id="date-range">
+                        <i class="fas fa-calendar calendar-icon"></i>
+                    </div>
+                    
+                    <!-- Doctor filter dropdown -->
+                    <div class="filter-card">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
+                        <select class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" id="doctor-filter">
+                            <option value="all">All Doctors</option>
+                            <option>Dr. Patel (Cardiology)</option>
+                            <option>Dr. Sharma (Orthopedics)</option>
+                            <option>Dr. Reddy (Pediatrics)</option>
+                            <option>Dr. Kumar (Emergency)</option>
+                            <option>Dr. Gupta (Neurology)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Department filter dropdown -->
+                    <div class="filter-card">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <select class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" id="dept-filter">
+                            <option value="all">All Departments</option>
+                            <option>Cardiology</option>
+                            <option>Orthopedics</option>
+                            <option>Pediatrics</option>
+                            <option>Neurology</option>
+                            <option>Emergency</option>
+                            <option>Dermatology</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- We are creating the appointments table -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Appointment List</h3>
+                    <p class="text-gray-600">Showing <span id="showing-count">6</span> of <span id="total-count">142</span> appointments</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-100 text-left">
+                                <th class="py-3 px-4 font-semibold text-gray-700">Patient</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700">Doctor & Dept</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700">Date & Time</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700">Type</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700">Status</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200" id="appointments-table">
+                            <!-- We are creating the first appointment row -->
+                            <tr class="table-row">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">RS</div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Rahul Sharma</div>
+                                            <div class="text-sm text-gray-600">PAT-78945</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Dr. Patel</div>
+                                    <div class="text-sm text-gray-600">Cardiology</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Today, 10:30 AM</div>
+                                    <div class="text-sm text-gray-600">Room 304</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm bg-blue-100 text-blue-800 py-1 px-2 rounded">Consultation</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="appointment-status status-scheduled">Scheduled</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="action-btn text-blue-600 hover:text-blue-800" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn text-yellow-600 hover:text-yellow-800" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn text-green-600 hover:text-green-800" title="Check-in">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                        <button class="action-btn text-red-600 hover:text-red-800" title="Cancel">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- We are creating the second appointment row (emergency) -->
+                            <tr class="table-row">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">PD</div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Priya Desai</div>
+                                            <div class="text-sm text-gray-600">PAT-78946</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Dr. Kumar</div>
+                                    <div class="text-sm text-gray-600">Emergency</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Today, 11:15 AM</div>
+                                    <div class="text-sm text-gray-600">ER Room 1</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm bg-red-100 text-red-800 py-1 px-2 rounded">Emergency</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="appointment-status status-emergency">Emergency</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="action-btn text-blue-600 hover:text-blue-800" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn text-yellow-600 hover:text-yellow-800" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn text-green-600 hover:text-green-800" title="Check-in">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- We are creating the third appointment row (completed) -->
+                            <tr class="table-row">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">AP</div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Amit Patel</div>
+                                            <div class="text-sm text-gray-600">PAT-78947</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Dr. Sharma</div>
+                                    <div class="text-sm text-gray-600">Orthopedics</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Today, 9:00 AM</div>
+                                    <div class="text-sm text-gray-600">Room 205</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm bg-green-100 text-green-800 py-1 px-2 rounded">Follow-up</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="appointment-status status-completed">Completed</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="action-btn text-blue-600 hover:text-blue-800" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn text-gray-600 hover:text-gray-800" title="Medical Record">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- We are creating the fourth appointment row (in progress) -->
+                            <tr class="table-row">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">NG</div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Neha Gupta</div>
+                                            <div class="text-sm text-gray-600">PAT-78948</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Dr. Reddy</div>
+                                    <div class="text-sm text-gray-600">Pediatrics</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Today, 11:45 AM</div>
+                                    <div class="text-sm text-gray-600">Room 112</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm bg-blue-100 text-blue-800 py-1 px-2 rounded">Consultation</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="appointment-status status-in-progress">In Progress</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="action-btn text-blue-600 hover:text-blue-800" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn text-yellow-600 hover:text-yellow-800" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn text-green-600 hover:text-green-800" title="Complete">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- We are creating the fifth appointment row (scheduled) -->
+                            <tr class="table-row">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">VK</div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Vikram Kapoor</div>
+                                            <div class="text-sm text-gray-600">PAT-78949</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Dr. Gupta</div>
+                                    <div class="text-sm text-gray-600">Neurology</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Tomorrow, 2:30 PM</div>
+                                    <div class="text-sm text-gray-600">Room 401</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm bg-purple-100 text-purple-800 py-1 px-2 rounded">Test</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="appointment-status status-scheduled">Scheduled</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="action-btn text-blue-600 hover:text-blue-800" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn text-yellow-600 hover:text-yellow-800" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn text-red-600 hover:text-red-800" title="Cancel">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- We are creating the sixth appointment row (cancelled) -->
+                            <tr class="table-row">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <div class="avatar mr-3">SM</div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Sanjay Mehta</div>
+                                            <div class="text-sm text-gray-600">PAT-78950</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Dr. Patel</div>
+                                    <div class="text-sm text-gray-600">Cardiology</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-medium">Today, 3:00 PM</div>
+                                    <div class="text-sm text-gray-600">Room 304</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm bg-blue-100 text-blue-800 py-1 px-2 rounded">Consultation</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="appointment-status status-cancelled">Cancelled</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end space-x-2">
+                                        <button class="action-btn text-blue-600 hover:text-blue-800" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn text-gray-600 hover:text-gray-800" title="Reschedule">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- We are adding pagination controls -->
+                <div class="flex flex-col md:flex-row justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                    <div class="text-sm text-gray-600 mb-4 md:mb-0">
+                        Showing 1 to 6 of 142 appointments
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
+                        <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg">2</button>
+                        <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg">3</button>
+                        <span class="px-3 py-1">...</span>
+                        <button class="px-3 py-1 bg-white border text-gray-700 rounded-lg">24</button>
+                        <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- We are adding summary statistics cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                    <div class="text-3xl font-bold text-blue-600">142</div>
+                    <div class="text-gray-600 mt-2">Total Appointments</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                    <div class="text-3xl font-bold text-green-600">89</div>
+                    <div class="text-gray-600 mt-2">Completed</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                    <div class="text-3xl font-bold text-yellow-600">24</div>
+                    <div class="text-gray-600 mt-2">In Progress</div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+                    <div class="text-3xl font-bold text-red-600">29</div>
+                    <div class="text-gray-600 mt-2">Cancelled</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- We are adding JavaScript functionality -->
+    <script>
+        // We are initializing the page when DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // We are setting up mobile menu toggle functionality
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-open');
+            });
+            
+            // We are initializing the date picker with range selection
+            flatpickr("#date-range", {
+                mode: "range",
+                dateFormat: "d M Y",
+                defaultDate: "today",
+                onChange: function(selectedDates, dateStr, instance) {
+                    filterAppointments();
+                }
+            });
+            
+            // We are setting up profile dropdown functionality
+            const profileButton = document.getElementById('profile-button');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            
+            profileButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('dropdown-open');
+            });
+            
+            // We are closing dropdown when clicking outside
+            document.addEventListener('click', function() {
+                profileDropdown.classList.remove('dropdown-open');
+            });
+            
+            // We are preventing dropdown from closing when clicking inside
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // We are handling logout button functionality
+            const logoutButton = document.getElementById('logout-button');
+            if(logoutButton) {
+                logoutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('You have been logged out successfully.');
+                    window.location.href = '/welcome page/login.html';
+                });
+            }
+            
+            // We are handling row clicks for appointment details
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function(e) {
+                    // We are preventing triggering if action button was clicked
+                    if (!e.target.closest('button')) {
+            alert('Viewing appointment details');
+        }
+    });
+});
+
+// We are handling action buttons (Check-in, Complete, Cancel, etc.)
+const actionBtns = document.querySelectorAll('.action-btn');
+actionBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        // We are preventing the click from bubbling up to the row click handler
+        e.stopPropagation();
+        
+        // We are getting the action type from the button's title (e.g., 'Check-in', 'Cancel')
+        const action = this.title;
+        alert(`Performing action: ${action}`);
+        
+        // We are handling Check-in/Complete actions specifically
+        if (action === 'Check-in' || action === 'Complete') {
+            // We are finding the status element in the same table row
+            const statusElement = this.closest('tr').querySelector('.appointment-status');
+            
+            if (statusElement) {
+                // We are updating status text and class based on the action
+                statusElement.textContent = action === 'Check-in' ? 'In Progress' : 'Completed';
+                statusElement.className = 'appointment-status ' + 
+                    (action === 'Check-in' ? 'status-in-progress' : 'status-completed');
+            }
+        }
+        
+        // We are handling Cancel action with a confirmation dialog
+        if (action === 'Cancel') {
+            const statusElement = this.closest('tr').querySelector('.appointment-status');
+            
+            if (statusElement && confirm('Are you sure you want to cancel this appointment?')) {
+                // We are updating status to "Cancelled" if confirmed
+                statusElement.textContent = 'Cancelled';
+                statusElement.className = 'appointment-status status-cancelled';
+            }
+        }
+    });
+});
+
+// We are setting up filter toggle functionality (show/hide filters)
+const filterToggle = document.getElementById('filter-toggle');
+const filterOptions = document.getElementById('filter-options');
+
+filterToggle.addEventListener('click', function() {
+    // We are toggling visibility of filter options
+    filterOptions.classList.toggle('hidden');
+    
+    // We are updating the button text based on current state
+    this.innerHTML = this.innerHTML.includes('Hide') ? 
+        '<i class="fas fa-filter mr-2"></i> Filters' : 
+        '<i class="fas fa-filter mr-2"></i> Hide Filters';
+});
+
+// We are setting up export button functionality
+const exportButton = document.getElementById('export-button');
+exportButton.addEventListener('click', function() {
+    // We are showing an alert (in a real app, this would export data)
+    alert('Exporting appointments data...');
+});
+
+// We are initializing filter dropdowns and their event listeners
+const statusFilter = document.getElementById('status-filter');
+const doctorFilter = document.getElementById('doctor-filter');
+const deptFilter = document.getElementById('dept-filter');
+
+// We are adding change listeners to all filters
+statusFilter.addEventListener('change', filterAppointments);
+doctorFilter.addEventListener('change', filterAppointments);
+deptFilter.addEventListener('change', filterAppointments);
+
+// We are defining the main filter function
+function filterAppointments() {
+    // We are getting selected filter values
+    const statusValue = statusFilter.value;
+    const doctorValue = doctorFilter.value;
+    const deptValue = deptFilter.value;
+    
+    // We are selecting all table rows for filtering
+    const rows = document.querySelectorAll('#appointments-table tr');
+    let visibleCount = 0;
+    
+    // We are looping through each row to apply filters
+    rows.forEach(row => {
+        // We are extracting row data (status, doctor, department)
+        const rowStatus = row.querySelector('.appointment-status').textContent.trim();
+        const rowDoctor = row.querySelector('td:nth-child(2) > div:first-child').textContent.trim();
+        const rowDept = row.querySelector('td:nth-child(2) > div:last-child').textContent.trim();
+        
+        let shouldShow = true;
+        
+        // We are applying status filter (if not 'all')
+        if (statusValue !== 'all' && rowStatus !== statusValue) {
+            shouldShow = false;
+        }
+        
+        // We are applying doctor filter (if not 'all')
+        if (doctorValue !== 'all' && rowDoctor !== doctorValue.split(' (')[0]) {
+            shouldShow = false;
+        }
+        
+        // We are applying department filter (if not 'all')
+        if (deptValue !== 'all' && rowDept !== deptValue) {
+            shouldShow = false;
+        }
+        
+        // We are showing/hiding the row based on filter results
+        if (shouldShow) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // We are updating the visible appointments counter
+    document.getElementById('showing-count').textContent = visibleCount;
+}
+});
+</script>
+</body>
+</html>

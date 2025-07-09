@@ -1,0 +1,542 @@
+Here's the properly formatted HTML file with detailed comments for each section:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- We are defining the document metadata and linking external resources -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - National e-Hospital</title>
+    
+    <!-- We are including Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- We are including Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- We are defining custom styles for our application -->
+    <style>
+        /* We are setting up CSS variables for consistent theming */
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+        }
+
+        /* We are setting the base font and background for the body */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* We are creating a gradient background class */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* We are defining hover effects for cards */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling dashboard cards with transitions */
+        .dashboard-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* We are adding hover effects to dashboard cards */
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling appointment status badges */
+        .appointment-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        /* We are defining styles for different badge statuses */
+        .badge-confirmed {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-pending {
+            background-color: #fffbeb;
+            color: #ca8a04;
+        }
+
+        .badge-completed {
+            background-color: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .badge-cancelled {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* We are styling health metrics with transitions */
+        .health-metric {
+            transition: all 0.3s ease;
+        }
+
+        /* We are adding hover effects to health metrics */
+        .health-metric:hover {
+            transform: scale(1.05);
+        }
+
+        /* We are styling sidebar items with transitions */
+        .sidebar-item {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+
+        /* We are adding hover effects to sidebar items */
+        .sidebar-item:hover {
+            background-color: #dbeafe;
+        }
+
+        /* We are styling active sidebar items */
+        .sidebar-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        /* We are styling notification dots */
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+        }
+
+        /* We are adding responsive styles for mobile devices */
+        @media (max-width: 768px) {
+            /* We are styling the sidebar for mobile */
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 50;
+            }
+            
+            /* We are defining the open state for mobile sidebar */
+            .sidebar-open {
+                transform: translateX(0);
+            }
+            
+            /* We are styling the overlay for mobile menu */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            
+            /* We are defining the active state for overlay */
+            .overlay-active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+    <!-- We are creating the top navigation bar -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- We are adding a mobile menu toggle button -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </div>
+            </div>
+            
+            <!-- We are creating the right side of the navigation with notification and profile -->
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="relative p-1">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-dot absolute top-0 right-0"></span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10"></div>
+                    <div class="hidden md:block">
+                        <div class="font-medium">Rahul Sharma</div>
+                        <div class="text-sm text-blue-200">Patient ID: P-768934</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- We are creating the main dashboard content area -->
+    <div class="flex flex-1">
+        <!-- We are adding a mobile overlay for sidebar -->
+        <div id="overlay" class="overlay"></div>
+        
+        <!-- We are creating the sidebar navigation -->
+        <div id="sidebar" class="sidebar bg-white w-64 min-h-screen shadow-md p-4 fixed md:relative md:translate-x-0">
+            <div class="mb-8 mt-4">
+               <!-- We are adding the patient profile section in sidebar -->
+               <a href="/patient/profilepage.html"><div class="flex items-center space-x-3 mb-6 p-3 bg-blue-50 rounded-lg">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-14 h-14"></div>
+                    <div>
+                        <div class="font-bold text-gray-800">Rahul Sharma</div>
+                        <div class="text-sm text-gray-600">Age: 35 | Male</div>
+                    </div>
+                </div></a>
+                
+                <!-- We are creating the main navigation links -->
+                <nav class="space-y-1">
+                    <a href="/patient/Patient_Dashboard.html" class="sidebar-item active flex items-center space-x-3">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/patient/queuestatus.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                   
+                    <a href="/patient/billing.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Billing</span>
+                    </a>
+                    <a href="/patient/findspecialist.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Find Specialist</span>
+                    </a>
+                    <a href="/patient/FindHospital.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Find Hospital</span>
+                    </a>
+                    <a href="/patient/settings.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- We are adding emergency contact information in sidebar -->
+            <div class="mt-auto p-3 bg-blue-50 rounded-lg">
+                <div class="text-sm font-medium text-gray-800 mb-2">Emergency Contact</div>
+                <div class="text-red-600 font-bold flex items-center">
+                    <i class="fas fa-phone-alt mr-2"></i>
+                    108
+                </div>
+                <div class="text-xs text-gray-600 mt-1">Available 24/7 for medical emergencies</div>
+            </div>
+        </div>
+
+        <!-- We are creating the main content area -->
+        <main class="flex-1 p-4 md:p-8">
+            <!-- We are adding the welcome header section -->
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Welcome back, Rahul!</h1>
+                <p class="text-gray-600">Here's your health summary and upcoming appointments</p>
+            </div>
+            
+            <!-- We are creating quick stats cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-full mr-4 text-blue-600">
+                            <i class="fas fa-calendar-check text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold">3</div>
+                            <div class="text-gray-600">Upcoming Appointments</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-full mr-4 text-green-600">
+                            <i class="fas fa-prescription-bottle-medical text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold">2</div>
+                            <div class="text-gray-600">Active Prescriptions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-full mr-4 text-yellow-600">
+                            <i class="fas fa-file-medical text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold">12</div>
+                            <div class="text-gray-600">Medical Records</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card bg-white p-5 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-full mr-4 text-purple-600">
+                            <i class="fas fa-heartbeat text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold">Normal</div>
+                            <div class="text-gray-600">Health Status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- We are creating the main content grid layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- We are creating the left column with larger width -->
+                <div class="lg:col-span-2">
+                    <!-- We are adding the upcoming appointments section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Upcoming Appointments</h2>
+                            <a href="/patient/queuestatus.html" class="text-blue-600 hover:underline">View All</a>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-blue-50">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                                        <i class="fas fa-user-md text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Dr. Priya Singh</div>
+                                        <div class="text-gray-600">Cardiologist</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold">Tomorrow, 10:30 AM</div>
+                                    <div class="text-gray-600">AIIMS Delhi</div>
+                                    <span class="appointment-badge badge-confirmed">Confirmed</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-blue-50">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                                        <i class="fas fa-user-md text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Dr. Amit Patel</div>
+                                        <div class="text-gray-600">Orthopedic Surgeon</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold">July 15, 2:00 PM</div>
+                                    <div class="text-gray-600">Apollo Hospital</div>
+                                    <span class="appointment-badge badge-confirmed">Confirmed</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-blue-50">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                                        <i class="fas fa-user-md text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Dr. Neha Gupta</div>
+                                        <div class="text-gray-600">Dermatologist</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold">July 20, 11:15 AM</div>
+                                    <div class="text-gray-600">Max Healthcare</div>
+                                    <span class="appointment-badge badge-pending">Pending Confirmation</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button class="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i> Book New Appointment
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- We are adding the health metrics section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Health Metrics</h2>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="health-metric bg-white p-4 border border-gray-200 rounded-lg text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2">72</div>
+                                <div class="text-gray-600">Heart Rate</div>
+                                <div class="text-sm text-green-600 mt-1">
+                                    <i class="fas fa-arrow-down"></i> Normal
+                                </div>
+                            </div>
+                            
+                            <div class="health-metric bg-white p-4 border border-gray-200 rounded-lg text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2">120/80</div>
+                                <div class="text-gray-600">Blood Pressure</div>
+                                <div class="text-sm text-green-600 mt-1">
+                                    <i class="fas fa-check-circle"></i> Normal
+                                </div>
+                            </div>
+                            
+                            <div class="health-metric bg-white p-4 border border-gray-200 rounded-lg text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2">98.6°F</div>
+                                <div class="text-gray-600">Temperature</div>
+                                <div class="text-sm text-green-600 mt-1">
+                                    <i class="fas fa-check-circle"></i> Normal
+                                </div>
+                            </div>
+                            
+                            <div class="health-metric bg-white p-4 border border-gray-200 rounded-lg text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2">22.5</div>
+                                <div class="text-gray-600">BMI</div>
+                                <div class="text-sm text-green-600 mt-1">
+                                    <i class="fas fa-check-circle"></i> Healthy
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- We are creating the right column with smaller width -->
+                <div>
+                    <!-- We are adding quick actions section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <a href="/patient/BookAppointment.html" class="p-4 bg-blue-50 rounded-lg text-center hover:bg-blue-100 transition">
+                                <div class="text-blue-600 mb-2">
+                                    <i class="fas fa-calendar-plus text-2xl"></i>
+                                </div>
+                                <span>Book Appointment</span>
+                            </a>
+                            
+                            <a href="/patient/FindHospital.html" class="p-4 bg-yellow-50 rounded-lg text-center hover:bg-yellow-100 transition">
+                                <div class="text-yellow-600 mb-2">
+                                    <i class="fas fa-hospital text-2xl"></i>
+                                </div>
+                                <span>Find Hospitals</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- We are adding recent activity section -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Activity</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600 mt-1">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Appointment booked with Dr. Amit Patel</div>
+                                    <div class="text-sm text-gray-600">July 1, 2025 | 11:30 AM</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-green-100 p-2 rounded-full mr-3 text-green-600 mt-1">
+                                    <i class="fas fa-prescription"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">your presence  added by Dr. Priya Singh</div>
+                                    <div class="text-sm text-gray-600">july 8, 2025 | 3:15 PM</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-purple-100 p-2 rounded-full mr-3 text-purple-600 mt-1">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Your Appointment is Tommorow</div>
+                                    <div class="text-sm text-gray-600">july 9, 2025 | 10:00 AM</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-yellow-100 p-2 rounded-full mr-3 text-yellow-600 mt-1">
+                                    <i class="fas fa-comment-medical"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium"> Appintment request Sent to  Dr. Neha Gupta</div>
+                                    <div class="text-sm text-gray-600">july 22, 2025 | 4:45 PM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- We are adding health tips section -->
+                    <div class="dashboard-card bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl shadow-sm p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Health Tips</h2>
+                        <div class="flex items-start bg-white p-4 rounded-lg mb-4">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium mb-1">Cardiovascular Health</div>
+                                <p class="text-sm text-gray-600">Aim for at least 30 minutes of moderate exercise daily to strengthen your heart.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start bg-white p-4 rounded-lg">
+                            <div class="bg-green-100 p-2 rounded-full mr-3 text-green-600">
+                                <i class="fas fa-apple-alt"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium mb-1">Nutrition Advice</div>
+                                <p class="text-sm text-gray-600">Include at least 5 servings of fruits and vegetables in your daily diet for better immunity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- We are adding JavaScript for interactive functionality -->
+    <script>
+        // We are waiting for the DOM to be fully loaded before executing our script
+        document.addEventListener('DOMContentLoaded', function() {
+            // We are getting references to important DOM elements
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            // We are adding click event listener to the menu toggle button
+            menuToggle.addEventListener('click', function() {
+                // We are toggling the sidebar and overlay classes
+                sidebar.classList.toggle('sidebar-open');
+                overlay.classList.toggle('overlay-active');
+            });
+            
+            // We are adding click event listener to the overlay
+            overlay.addEventListener('click', function() {
+                // We are closing the sidebar when overlay is clicked
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.remove('overlay-active');
+            });
+        });
+    </script>
+</body>
+</html>
