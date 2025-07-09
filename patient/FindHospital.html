@@ -1,0 +1,1128 @@
+Here's the properly formatted HTML file with detailed comments for each section, maintaining the original spacing and structure:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- We are defining the document type and language -->
+    <meta charset="UTF-8">
+    <!-- We are setting the character encoding to UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- We are configuring responsive viewport settings -->
+    <title>Find Hospitals - National e-Hospital</title>
+    <!-- We are setting the page title -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- We are including Tailwind CSS from CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- We are including Font Awesome for icons -->
+    <style>
+        /* We are defining CSS variables for color scheme */
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+        }
+
+        /* We are setting base body styles */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* We are creating a gradient background class */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* We are defining hover effects for cards */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling dashboard cards with transitions */
+        .dashboard-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling appointment status badges */
+        .appointment-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        /* We are defining color schemes for different badge states */
+        .badge-confirmed {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-pending {
+            background-color: #fffbeb;
+            color: #ca8a04;
+        }
+
+        .badge-completed {
+            background-color: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .badge-cancelled {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* We are adding animations to health metrics */
+        .health-metric {
+            transition: all 0.3s ease;
+        }
+
+        .health-metric:hover {
+            transform: scale(1.05);
+        }
+
+        /* We are styling sidebar navigation items */
+        .sidebar-item {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: #dbeafe;
+        }
+
+        .sidebar-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        /* We are creating a notification indicator dot */
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+        }
+
+        /* We are styling hospital type badges */
+        .hospital-type-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        .badge-government {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-private {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .badge-specialty {
+            background-color: #f0fdf4;
+            color: #16a34a;
+        }
+
+        /* We are styling the map container */
+        .map-container {
+            height: 500px;
+            background-color: #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6b7280;
+            font-size: 1.25rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* We are styling the view toggle buttons */
+        .view-toggle {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+        }
+
+        .view-toggle-btn {
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-toggle-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .view-toggle-btn:first-child {
+            border-right: 1px solid #d1d5db;
+        }
+
+        /* We are adding transitions to filter sections */
+        .filter-section {
+            transition: all 0.3s ease;
+        }
+
+        /* We are adding responsive styles for mobile */
+        @media (max-width: 768px) {
+            /* We are styling the mobile sidebar */
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 50;
+            }
+            
+            .sidebar-open {
+                transform: translateX(0);
+            }
+            
+            /* We are styling the mobile overlay */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            
+            .overlay-active {
+                display: block;
+            }
+
+            /* We are adjusting map height for mobile */
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+    <!-- We are creating the top navigation bar -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- We are adding mobile menu toggle button -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <!-- We are adding logo and site title -->
+                <div class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </div>
+            </div>
+            
+            <!-- We are creating the user profile section -->
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <!-- We are adding notification bell -->
+                    <button class="relative p-1">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-dot absolute top-0 right-0"></span>
+                    </button>
+                </div>
+                <!-- We are linking to user profile page -->
+                <a href="/patient/profilepage.html">    
+                    <div class="flex items-center space-x-2">
+                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10"></div>
+                        <div class="hidden md:block">
+                            <div class="font-medium">Rahul Sharma</div>
+                            <div class="text-sm text-blue-200">Patient ID: P-768934</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- We are creating the main content area -->
+    <div class="flex flex-1">
+        <!-- We are adding mobile overlay -->
+        <div id="overlay" class="overlay"></div>
+        
+        <!-- We are creating the sidebar -->
+        <div id="sidebar" class="sidebar bg-white w-64 min-h-screen shadow-md p-4 fixed md:relative md:translate-x-0">
+            <div class="mb-8 mt-4">
+                <!-- We are adding user profile in sidebar -->
+                <div class="flex items-center space-x-3 mb-6 p-3 bg-blue-50 rounded-lg">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-14 h-14"></div>
+                    <div>
+                        <div class="font-bold text-gray-800">Rahul Sharma</div>
+                        <div class="text-sm text-gray-600">Age: 35 | Male</div>
+                    </div>
+                </div>
+                
+                <!-- We are creating navigation menu -->
+                <nav class="space-y-1">
+                    <a href="/patient/Patient_Dashboard.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/patient/BookAppointment.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                    <a href="/patient/billing.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Billing</span>
+                    </a>
+                    <a href="/patient/findspecialist.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Find Specialist</span>
+                    </a>
+                    <a href="/patient//FindHospital.html" class="sidebar-item active flex items-center space-x-3">
+                        <i class="fas fa-hospital-user"></i>
+                        <span>Find Hospitals</span>
+                    </a>
+                    <a href="/patient/settings.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- We are adding emergency contact section -->
+            <div class="mt-auto p-3 bg-blue-50 rounded-lg">
+                <div class="text-sm font-medium text-gray-800 mb-2">Emergency Contact</div>
+                <div class="text-red-600 font-bold flex items-center">
+                    <i class="fas fa-phone-alt mr-2"></i>
+                    108
+                </div>
+                <div class="text-xs text-gray-600 mt-1">Available 24/7 for medical emergencies</div>
+            </div>
+        </div>
+
+        <!-- We are creating the main content area for hospitals -->
+        <main class="flex-1 p-4 md:p-8">
+            <!-- We are adding page header -->
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Find Hospitals</h1>
+                <p class="text-gray-600">Search and find the best hospitals near you</p>
+            </div>
+            
+            <!-- We are creating search and filter section -->
+            <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- We are adding search input -->
+                    <div class="md:col-span-2">
+                        <label class="block text-gray-700 font-medium mb-2" for="search">Search Hospitals</label>
+                        <div class="relative">
+                            <input type="text" id="search" placeholder="Search by name, specialty or location" 
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <button class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- We are adding location filter -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="location">Location</label>
+                        <select id="location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Location</option>
+                            <option value="delhi">Delhi</option>
+                            <option value="mumbai">Mumbai</option>
+                            <option value="bangalore">Bangalore</option>
+                            <option value="chennai">Chennai</option>
+                            <option value="kolkata">Kolkata</option>
+                        </select>
+                    </div>
+                    
+                    <!-- We are adding specialty filter -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="specialty">Specialty</label>
+                        <select id="specialty" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Specialties</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="oncology">Oncology</option>
+                            <option value="pediatrics">Pediatrics</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- We are adding advanced filters section -->
+                <div class="mt-4">
+                    <button id="toggle-filters" class="text-blue-600 flex items-center">
+                        <span>Advanced Filters</span>
+                        <i class="fas fa-chevron-down ml-2 text-sm"></i>
+                    </button>
+                    
+                    <div id="advanced-filters" class="filter-section grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 hidden">
+                        <!-- We are adding hospital type filters -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Hospital Type</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600" checked>
+                                    <span class="ml-2">Government</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600" checked>
+                                    <span class="ml-2">Private</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600">
+                                    <span class="ml-2">Specialty Clinics</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- We are adding facilities filters -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Facilities</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600">
+                                    <span class="ml-2">Emergency Services</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600">
+                                    <span class="ml-2">ICU</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600">
+                                    <span class="ml-2">Pharmacy</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="form-checkbox text-blue-600">
+                                    <span class="ml-2">Diagnostic Lab</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- We are adding rating filters -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Rating</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="rating" class="form-radio text-blue-600" checked>
+                                    <span class="ml-2">Any Rating</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="rating" class="form-radio text-blue-600">
+                                    <span class="ml-2 flex items-center">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    </span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="rating" class="form-radio text-blue-600">
+                                    <span class="ml-2 flex items-center">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="far fa-star text-yellow-400 mr-1"></i>
+                                        & Up
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- We are adding distance filters -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Distance</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="distance" class="form-radio text-blue-600" checked>
+                                    <span class="ml-2">Any Distance</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="distance" class="form-radio text-blue-600">
+                                    <span class="ml-2">Within 5 km</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="distance" class="form-radio text-blue-600">
+                                    <span class="ml-2">Within 10 km</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="distance" class="form-radio text-blue-600">
+                                    <span class="ml-2">Within 20 km</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- We are adding filter action buttons -->
+                <div class="mt-6 flex justify-between">
+                    <button class="px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                        Reset Filters
+                    </button>
+                    <button class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">
+                        Search Hospitals
+                    </button>
+                </div>
+            </div>
+            
+            <!-- We are creating view toggle section -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">24 Hospitals Found</h2>
+                    <p class="text-gray-600">in Delhi</p>
+                </div>
+                
+                <!-- We are adding view toggle buttons -->
+                <div class="flex items-center">
+                    <div class="view-toggle mr-4">
+                        <button id="map-view" class="view-toggle-btn active">
+                            <i class="fas fa-map mr-2"></i> Map View
+                        </button>
+                        <button id="list-view" class="view-toggle-btn">
+                            <i class="fas fa-list mr-2"></i> List View
+                        </button>
+                    </div>
+                    <!-- We are adding sort dropdown -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="sort">Sort by</label>
+                        <select id="sort" class="p-2 border border-gray-300 rounded-lg">
+                            <option value="distance">Distance: Nearest First</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="name">Name: A to Z</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- We are creating map view container -->
+            <div id="map-container" class="mb-8">
+                <div class="map-container">
+                    <div class="map-placeholder">
+                        <div>
+                            <i class="fas fa-map-marked-alt text-4xl mb-4 text-blue-500"></i>
+                            <h3 class="font-bold mb-2">Hospital Map View</h3>
+                            <p class="mb-4">Interactive map showing hospital locations</p>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">Enable Location</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- We are creating list view container (hidden by default) -->
+            <div id="list-container" class="hidden">
+                <!-- We are creating hospital list grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- We are creating hospital card 1 -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 mb-1">AIIMS Delhi</h3>
+                                    <div class="flex items-center mb-3">
+                                        <span class="hospital-type-badge badge-government mr-2">Government</span>
+                                        <div class="flex items-center text-yellow-500">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <span class="ml-1 text-gray-600 text-sm">4.7</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+                            </div>
+                            
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>Ansari Nagar, New Delhi</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Neurology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Orthopedics</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+5 more</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        <span>Emergency Services Available</span>
+                                    </div>
+                                    <div>2.5 km away</div>
+                                </div>
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- We are creating hospital card 2 -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 mb-1">Apollo Hospital</h3>
+                                    <div class="flex items-center mb-3">
+                                        <span class="hospital-type-badge badge-private mr-2">Private</span>
+                                        <div class="flex items-center text-yellow-500">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                            <span class="ml-1 text-gray-600 text-sm">4.2</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+                            </div>
+                            
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>Sarita Vihar, New Delhi</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Oncology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Pediatrics</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+8 more</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        <span>24/7 Emergency</span>
+                                    </div>
+                                    <div>5.2 km away</div>
+                                </div>
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- We are creating hospital card 3 -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 mb-1">Max Super Specialty</h3>
+                                    <div class="flex items-center mb-3">
+                                        <span class="hospital-type-badge badge-private mr-2">Private</span>
+                                        <div class="flex items-center text-yellow-500">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <span class="ml-1 text-gray-600 text-sm">4.9</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+                            </div>
+                            
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>Saket, New Delhi</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Orthopedics</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Neurology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+10 more</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        <span>Advanced ICU</span>
+                                    </div>
+                                    <div>7.8 km away</div>
+                                </div>
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- We are creating hospital card 4 -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 mb-1">Fortis Hospital</h3>
+                                    <div class="flex items-center mb-3">
+                                        <span class="hospital-type-badge badge-private mr-2">Private</span>
+                                        <div class="flex items-center text-yellow-500">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <span class="ml-1 text-gray-600 text-sm">4.5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+                            </div>
+                            
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>Shalimar Bagh, Delhi</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Oncology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Pediatrics</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+7 more</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        <span>Trauma Center</span>
+                                    </div>
+                                    <div>10.3 km away</div>
+                                </div>
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- We are creating hospital card 5 -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 mb-1">Safdarjung Hospital</h3>
+                                    <div class="flex items-center mb-3">
+                                        <span class="hospital-type-badge badge-government mr-2">Government</span>
+                                        <div class="flex items-center text-yellow-500">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <i class="far fa-star"></i>
+                                            <span class="ml-1 text-gray-600 text-sm">3.8</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+                            </div>
+                            
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>Ansari Nagar West, New Delhi</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">General Medicine</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Surgery</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Pediatrics</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+12 more</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        <span>24/7 Emergency</span>
+                                    </div>
+                                    <div>3.1 km away</div>
+                                </div>
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- We are creating hospital card 6 -->
+                    <div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 mb-1">Medanta - The Medicity</h3>
+                                    <div class="flex items-center mb-3">
+                                        <span class="hospital-type-badge badge-private mr-2">Private</span>
+                                        <div class="flex items-center text-yellow-500">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <span class="ml-1 text-gray-600 text-sm">4.9</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+                            </div>
+                            
+                            <div class="flex items-center text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>Sector 38, Gurugram</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Neurology</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Orthopedics</span>
+                                <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+15 more</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        I understand you want me to add comments to the existing HTML code without modifying or adding any extra content. Here's the properly commented version with inline comments explaining each section:
+
+```html
+<span>Advanced ICU</span>
+</div>
+<!-- We are displaying distance information -->
+<div>7.8 km away</div>
+</div>
+<!-- We are creating a view details button -->
+<button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+    View Details
+</button>
+</div>
+</div>
+</div>
+
+<!-- We are starting Hospital Card 4 -->
+<div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="p-5">
+<div class="flex justify-between items-start">
+<div>
+<!-- We are displaying hospital name -->
+<h3 class="font-bold text-xl text-gray-800 mb-1">Fortis Hospital</h3>
+<div class="flex items-center mb-3">
+<!-- We are showing hospital type badge -->
+<span class="hospital-type-badge badge-private mr-2">Private</span>
+<!-- We are creating star rating display -->
+<div class="flex items-center text-yellow-500">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+<span class="ml-1 text-gray-600 text-sm">4.5</span>
+</div>
+</div>
+</div>
+<!-- We are adding placeholder for hospital image -->
+<div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+</div>
+
+<!-- We are displaying location information -->
+<div class="flex items-center text-gray-600 mb-3">
+<i class="fas fa-map-marker-alt mr-2"></i>
+<span>Shalimar Bagh, Delhi</span>
+</div>
+
+<!-- We are showing specialty tags -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Oncology</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Pediatrics</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+7 more</span>
+</div>
+
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<!-- We are indicating trauma center availability -->
+<div class="flex items-center text-green-600">
+<i class="fas fa-check-circle mr-1"></i>
+<span>Trauma Center</span>
+</div>
+<!-- We are showing distance again -->
+<div>10.3 km away</div>
+</div>
+<!-- We are adding another view details button -->
+<button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+View Details
+</button>
+</div>
+</div>
+</div>
+
+<!-- We are starting Hospital Card 5 -->
+<div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="p-5">
+<div class="flex justify-between items-start">
+<div>
+<!-- We are displaying hospital name -->
+<h3 class="font-bold text-xl text-gray-800 mb-1">Safdarjung Hospital</h3>
+<div class="flex items-center mb-3">
+<!-- We are showing government hospital badge -->
+<span class="hospital-type-badge badge-government mr-2">Government</span>
+<!-- We are creating star rating display -->
+<div class="flex items-center text-yellow-500">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+<i class="far fa-star"></i>
+<span class="ml-1 text-gray-600 text-sm">3.8</span>
+</div>
+</div>
+</div>
+<!-- We are adding placeholder for hospital image -->
+<div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+</div>
+
+<!-- We are displaying location information -->
+<div class="flex items-center text-gray-600 mb-3">
+<i class="fas fa-map-marker-alt mr-2"></i>
+<span>Ansari Nagar West, New Delhi</span>
+</div>
+
+<!-- We are showing specialty tags -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">General Medicine</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Surgery</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Pediatrics</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+12 more</span>
+</div>
+
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<!-- We are indicating 24/7 emergency availability -->
+<div class="flex items-center text-green-600">
+<i class="fas fa-check-circle mr-1"></i>
+<span>24/7 Emergency</span>
+</div>
+<!-- We are showing distance -->
+<div>3.1 km away</div>
+</div>
+<!-- We are adding view details button -->
+<button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+View Details
+</button>
+</div>
+</div>
+</div>
+
+<!-- We are starting Hospital Card 6 -->
+<div class="dashboard-card bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="p-5">
+<div class="flex justify-between items-start">
+<div>
+<!-- We are displaying hospital name -->
+<h3 class="font-bold text-xl text-gray-800 mb-1">Medanta - The Medicity</h3>
+<div class="flex items-center mb-3">
+<!-- We are showing private hospital badge -->
+<span class="hospital-type-badge badge-private mr-2">Private</span>
+<!-- We are creating perfect star rating display -->
+<div class="flex items-center text-yellow-500">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<span class="ml-1 text-gray-600 text-sm">4.9</span>
+</div>
+</div>
+</div>
+<!-- We are adding placeholder for hospital image -->
+<div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16"></div>
+</div>
+
+<!-- We are displaying location information -->
+<div class="flex items-center text-gray-600 mb-3">
+<i class="fas fa-map-marker-alt mr-2"></i>
+<span>Sector 38, Gurugram</span>
+</div>
+
+<!-- We are showing specialty tags -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Cardiology</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Neurology</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">Orthopedics</span>
+<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">+15 more</span>
+</div>
+
+<div class="flex items-center justify-between">
+<div class="text-sm">
+<!-- We are indicating advanced ICU availability -->
+<div class="flex items-center text-green-600">
+<i class="fas fa-check-circle mr-1"></i>
+<span>Advanced ICU</span>
+</div>
+<!-- We are showing distance -->
+<div>18.5 km away</div>
+</div>
+<!-- We are adding view details button -->
+<button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+View Details
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- We are creating pagination controls -->
+<div class="flex justify-center items-center space-x-2">
+<!-- Previous page button -->
+<button class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+<i class="fas fa-chevron-left"></i>
+</button>
+<!-- Page number buttons -->
+<button class="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
+<button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">2</button>
+<button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">3</button>
+<!-- Ellipsis for more pages -->
+<span class="px-2">...</span>
+<button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">8</button>
+<!-- Next page button -->
+<button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
+<i class="fas fa-chevron-right"></i>
+</button>
+</div>
+</div>
+</main>
+</div>
+
+<!-- We are starting the footer section -->
+<footer class="bg-gray-900 text-white pt-12 pb-8">
+<div class="container mx-auto px-4">
+<!-- We are creating a grid layout for footer content -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+<div>
+<!-- Footer logo and description -->
+<h3 class="text-xl font-bold mb-4 flex items-center">
+<i class="fas fa-hospital mr-2"></i>National e-Hospital
+</h3>
+<p class="text-gray-400">A Government of India initiative to digitize healthcare access under the Ayushman Bharat scheme.</p>
+</div>
+
+<!-- Empty columns that would contain links -->
+<div></div>
+<div></div>
+
+<div>
+<!-- Contact information section -->
+<h4 class="font-bold text-lg mb-4">Contact</h4>
+<ul class="space-y-2">
+<!-- Helpline number -->
+<li class="flex items-center text-gray-400">
+<i class="fas fa-phone-alt mr-3 text-blue-400"></i>24x7 Helpline: 1800-123-4567
+</li>
+<!-- Email address -->
+<li class="flex items-center text-gray-400">
+<i class="fas fa-envelope mr-3 text-blue-400"></i>support@nationalehospital.gov.in
+</li>
+<!-- Physical address -->
+<li class="flex items-center text-gray-400">
+<i class="fas fa-map-marker-alt mr-3 text-blue-400"></i>Ministry of Health & Family Welfare, New Delhi
+</li>
+</ul>
+</div>
+</div>
+
+<!-- Footer copyright notice -->
+<div class="border-t border-gray-800 pt-8 text-center">
+<p class="text-gray-400">© 2025 National e-Hospital. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<!-- We are adding JavaScript functionality -->
+<script>
+// We are waiting for DOM to be fully loaded before executing scripts
+document.addEventListener('DOMContentLoaded', function() {
+// We are getting references to DOM elements
+const menuToggle = document.getElementById('menu-toggle');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const toggleFilters = document.getElementById('toggle-filters');
+const advancedFilters = document.getElementById('advanced-filters');
+const mapViewBtn = document.getElementById('map-view');
+const listViewBtn = document.getElementById('list-view');
+const mapContainer = document.getElementById('map-container');
+const listContainer = document.getElementById('list-container');
+
+// We are setting up mobile menu toggle functionality
+menuToggle.addEventListener('click', function() {
+sidebar.classList.toggle('sidebar-open');
+overlay.classList.toggle('overlay-active');
+});
+
+// We are making overlay clickable to close sidebar
+overlay.addEventListener('click', function() {
+sidebar.classList.remove('sidebar-open');
+overlay.classList.remove('overlay-active');
+});
+
+// We are setting up advanced filters toggle
+toggleFilters.addEventListener('click', function() {
+advancedFilters.classList.toggle('hidden');
+const icon = toggleFilters.querySelector('i');
+if (icon.classList.contains('fa-chevron-down')) {
+icon.classList.remove('fa-chevron-down');
+icon.classList.add('fa-chevron-up');
+} else {
+icon.classList.remove('fa-chevron-up');
+icon.classList.add('fa-chevron-down');
+}
+});
+
+// We are implementing map view functionality
+mapViewBtn.addEventListener('click', function() {
+mapViewBtn.classList.add('active');
+listViewBtn.classList.remove('active');
+mapContainer.classList.remove('hidden');
+listContainer.classList.add('hidden');
+});
+
+// We are implementing list view functionality
+listViewBtn.addEventListener('click', function() {
+listViewBtn.classList.add('active');
+mapViewBtn.classList.remove('active');
+listContainer.classList.remove('hidden');
+mapContainer.classList.add('hidden');
+});
+});
+</script>
+</body>
+</html>

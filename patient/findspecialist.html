@@ -1,0 +1,767 @@
+Here's the properly formatted HTML file with detailed comments for each section:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- We are defining the document metadata and including necessary CSS/JS libraries -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Specialist by Symptoms - National e-Hospital</title>
+    <!-- We are including Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- We are including Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* We are defining CSS variables for consistent theming */
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --dark: #1e3a8a;
+            --light: #eff6ff;
+            --success: #10b981;
+        }
+
+        /* We are setting base styles for the body */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* We are creating a gradient background class */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* We are defining hover effects for cards */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling dashboard cards with transitions */
+        .dashboard-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* We are adding hover effects to dashboard cards */
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* We are styling appointment badges */
+        .appointment-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        /* We are styling symptom tags/chips */
+        .symptom-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #dbeafe;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* We are styling the remove button in symptom tags */
+        .symptom-tag button {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* We are styling specialist cards */
+        .specialist-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* We are adding hover effects to specialist cards */
+        .specialist-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent);
+        }
+
+        /* We are styling sidebar items */
+        .sidebar-item {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+
+        /* We are adding hover effects to sidebar items */
+        .sidebar-item:hover {
+            background-color: #dbeafe;
+        }
+
+        /* We are styling active sidebar items */
+        .sidebar-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        /* We are styling notification dots */
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+        }
+        
+        /* We are styling the symptom input container */
+        .symptom-input-container {
+            position: relative;
+        }
+        
+        /* We are styling the symptom suggestions dropdown */
+        .symptom-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        /* We are styling individual symptom suggestions */
+        .symptom-suggestion {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        /* We are adding hover effects to suggestions */
+        .symptom-suggestion:hover {
+            background-color: #f1f5f9;
+        }
+        
+        /* We are styling the symptom chips container */
+        .symptom-chips {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 48px;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            background: white;
+        }
+        
+        /* We are adding responsive styles for mobile devices */
+        @media (max-width: 768px) {
+            /* We are styling the mobile sidebar */
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 50;
+            }
+            
+            /* We are styling the open state of mobile sidebar */
+            .sidebar-open {
+                transform: translateX(0);
+            }
+            
+            /* We are styling the overlay for mobile menu */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            
+            /* We are styling the active state of overlay */
+            .overlay-active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+    <!-- We are creating the top navigation bar -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- We are adding a mobile menu toggle button -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center">
+                    <i class="fas fa-hospital text-2xl mr-2"></i>
+                    <h1 class="text-xl font-bold">National e-Hospital</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <!-- We are adding a notification bell -->
+                <div class="relative">
+                    <button class="relative p-1">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-dot absolute top-0 right-0"></span>
+                    </button>
+                </div>
+                <!-- We are adding the user profile section -->
+                <a href="/patient/profilepage.html">   <div class="flex items-center space-x-2">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10"></div>
+                    <div class="hidden md:block">
+                        <div class="font-medium">Rahul Sharma</div>
+                        <div class="text-sm text-blue-200">Patient ID: P-768934</div>
+                    </div>
+                </div></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- We are creating the main dashboard content area -->
+    <div class="flex flex-1">
+        <!-- We are adding a mobile overlay for sidebar -->
+        <div id="overlay" class="overlay"></div>
+        
+        <!-- We are creating the sidebar navigation -->
+        <div id="sidebar" class="sidebar bg-white w-64 min-h-screen shadow-md p-4 fixed md:relative md:translate-x-0">
+            <div class="mb-8 mt-4">
+                <!-- We are adding the user profile in sidebar -->
+                <div class="flex items-center space-x-3 mb-6 p-3 bg-blue-50 rounded-lg">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-14 h-14"></div>
+                    <div>
+                        <div class="font-bold text-gray-800">Rahul Sharma</div>
+                        <div class="text-sm text-gray-600">Age: 35 | Male</div>
+                    </div>
+                </div>
+                
+                <!-- We are adding navigation links -->
+                <nav class="space-y-1">
+                    <a href="/patient/Patient_Dashboard.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/patient/queuestatus.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                   
+                    <a href="/patient/billing.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Billing</span>
+                    </a>
+                    <a href="/patient/findspecialist.html" class="sidebar-item active flex items-center space-x-3">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Find Specialist</span>
+                    </a>
+                    <a href="/patient/FindHospital.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-hospital-user"></i>
+                        <span>Find Hospitals</span>
+                    </a>
+                    <a href="/patient/settings.html" class="sidebar-item flex items-center space-x-3">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- We are adding emergency contact information -->
+            <div class="mt-auto p-3 bg-blue-50 rounded-lg">
+                <div class="text-sm font-medium text-gray-800 mb-2">Emergency Contact</div>
+                <div class="text-red-600 font-bold flex items-center">
+                    <i class="fas fa-phone-alt mr-2"></i>
+                    108
+                </div>
+                <div class="text-xs text-gray-600 mt-1">Available 24/7 for medical emergencies</div>
+            </div>
+        </div>
+
+        <!-- We are creating the main content area -->
+        <main class="flex-1 p-4 md:p-8">
+            <!-- We are adding the page header -->
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Find Specialist by Symptoms</h1>
+                <p class="text-gray-600">Describe your symptoms to find the right medical specialist</p>
+            </div>
+            
+            <!-- We are creating the symptom input section -->
+            <div class="dashboard-card bg-white rounded-xl shadow-sm p-6 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Describe Your Symptoms</h2>
+                        <p class="text-gray-600 mb-6">Enter your symptoms below. You can add multiple symptoms to get better recommendations.</p>
+                        
+                        <!-- We are creating the symptom input container -->
+                        <div class="symptom-input-container mb-4">
+                            <div class="symptom-chips" id="symptom-chips-container">
+                                <!-- Symptoms chips will appear here -->
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" id="symptom-input" placeholder="Type a symptom (e.g. headache, fever)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div id="symptom-suggestions" class="symptom-suggestions">
+                                <!-- Suggestions will be populated by JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- We are adding an optional details textarea -->
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Additional Details (Optional)</label>
+                            <textarea id="symptom-details" placeholder="Describe your symptoms in more detail (duration, intensity, etc.)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-32"></textarea>
+                        </div>
+                        
+                        <!-- We are adding the find specialist button -->
+                        <button id="find-specialist-btn" class="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center">
+                            <i class="fas fa-search mr-2"></i> Find Specialist
+                        </button>
+                    </div>
+                    
+                    <!-- We are adding a tips sidebar -->
+                    <div class="bg-blue-50 rounded-xl p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Tips for Better Results</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Be specific - "sharp chest pain" is better than "chest pain"</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Include duration - "headache for 3 days"</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Mention any related symptoms - "fever with cough"</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Note severity - "mild nausea" vs "severe vomiting"</span>
+                            </li>
+                        </ul>
+                        
+                        <!-- We are adding common symptoms quick selection -->
+                        <div class="mt-6">
+                            <h4 class="font-bold text-gray-800 mb-2">Common Symptoms</h4>
+                            <div class="flex flex-wrap">
+                                <span class="symptom-tag cursor-pointer" data-symptom="headache">Headache</span>
+                                <span class="symptom-tag cursor-pointer" data-symptom="fever">Fever</span>
+                                <span class="symptom-tag cursor-pointer" data-symptom="cough">Cough</span>
+                                <span class="symptom-tag cursor-pointer" data-symptom="chest pain">Chest Pain</span>
+                                <span class="symptom-tag cursor-pointer" data-symptom="abdominal pain">Abdominal Pain</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- We are creating the results section (hidden by default) -->
+            <div id="results-section" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Recommended Specialists</h2>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600 mr-3">Filter:</span>
+                        <select class="border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option>All Specialties</option>
+                            <option>Cardiologists</option>
+                            <option>Neurologists</option>
+                            <option>Orthopedists</option>
+                            <option>Dermatologists</option>
+                            <option>Gastroenterologists</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- We are creating a grid of specialist cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Specialist Card 1 -->
+                    <div class="specialist-card bg-white p-5">
+                        <div class="flex items-start">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold text-lg text-gray-800">Dr. Priya Singh</h3>
+                                    <div class="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                                        <i class="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                                        <span class="text-sm">4.8</span>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-medium mb-2">Cardiologist</div>
+                                <div class="text-sm text-gray-600 mb-3">
+                                    <i class="fas fa-hospital mr-2"></i>AIIMS Delhi
+                                </div>
+                                <div class="text-sm mb-4">
+                                    <span class="font-medium">Expertise:</span> Chest pain, Heart palpitations, Hypertension
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> 4.2 km away
+                                    </span>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg transition">
+                                        Book Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialist Card 2 -->
+                    <div class="specialist-card bg-white p-5">
+                        <div class="flex items-start">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold text-lg text-gray-800">Dr. Amit Patel</h3>
+                                    <div class="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                                        <i class="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                                        <span class="text-sm">4.6</span>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-medium mb-2">Neurologist</div>
+                                <div class="text-sm text-gray-600 mb-3">
+                                    <i class="fas fa-hospital mr-2"></i>Apollo Hospital
+                                </div>
+                                <div class="text-sm mb-4">
+                                    <span class="font-medium">Expertise:</span> Headaches, Migraines, Dizziness
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> 2.8 km away
+                                    </span>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg transition">
+                                        Book Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialist Card 3 -->
+                    <div class="specialist-card bg-white p-5">
+                        <div class="flex items-start">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold text-lg text-gray-800">Dr. Neha Gupta</h3>
+                                    <div class="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                                        <i class="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                                        <span class="text-sm">4.9</span>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-medium mb-2">Gastroenterologist</div>
+                                <div class="text-sm text-gray-600 mb-3">
+                                    <i class="fas fa-hospital mr-2"></i>Max Healthcare
+                                </div>
+                                <div class="text-sm mb-4">
+                                    <span class="font-medium">Expertise:</span> Abdominal pain, Nausea, Digestive issues
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> 5.1 km away
+                                    </span>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg transition">
+                                        Book Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialist Card 4 -->
+                    <div class="specialist-card bg-white p-5">
+                        <div class="flex items-start">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold text-lg text-gray-800">Dr. Rajesh Kumar</h3>
+                                    <div class="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                                        <i class="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                                        <span class="text-sm">4.7</span>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-medium mb-2">Orthopedic Surgeon</div>
+                                <div class="text-sm text-gray-600 mb-3">
+                                    <i class="fas fa-hospital mr-2"></i>Fortis Hospital
+                                </div>
+                                <div class="text-sm mb-4">
+                                    <span class="font-medium">Expertise:</span> Joint pain, Back pain, Sports injuries
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> 3.5 km away
+                                    </span>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg transition">
+                                        Book Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialist Card 5 -->
+                    <div class="specialist-card bg-white p-5">
+                        <div class="flex items-start">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold text-lg text-gray-800">Dr. Sunita Reddy</h3>
+                                    <div class="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                                        <i class="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                                        <span class="text-sm">4.8</span>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-medium mb-2">Pulmonologist</div>
+                                <div class="text-sm text-gray-600 mb-3">
+                                    <i class="fas fa-hospital mr-2"></i>Medanta Hospital
+                                </div>
+                                <div class="text-sm mb-4">
+                                    <span class="font-medium">Expertise:</span> Cough, Shortness of breath, Respiratory issues
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> 6.3 km away
+                                    </span>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg transition">
+                                        Book Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialist Card 6 -->
+                    <div class="specialist-card bg-white p-5">
+                        <div class="flex items-start">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold text-lg text-gray-800">Dr. Vikram Mehta</h3>
+                                    <div class="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                                        <i class="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                                        <span class="text-sm">4.5</span>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-medium mb-2">General Physician</div>
+                                <div class="text-sm text-gray-600 mb-3">
+                                    <i class="fas fa-hospital mr-2"></i>Columbia Asia
+                                </div>
+                                <div class="text-sm mb-4">
+                                    <span class="font-medium">Expertise:</span> Fever, General symptoms, Initial diagnosis
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> 1.2 km away
+                                    </span>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg transition">
+                                        Book Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- We are adding a load more button -->
+                <div class="mt-8 text-center">
+                    <button class="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-redo mr-2"></i> Load More Specialists
+                    </button>
+                </div>
+            </div>
+            
+            <!-- We are creating an empty state for when no symptoms are entered -->
+            <div id="empty-state" class="dashboard-card bg-white rounded-xl shadow-sm p-12 text-center hidden">
+                <div class="mx-auto w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-stethoscope text-blue-600 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Describe Your Symptoms to Find Specialists</h3>
+                <p class="text-gray-600 max-w-md mx-auto mb-6">
+                    Enter your symptoms in the field above to get matched with relevant medical specialists who can help with your condition.
+                </p>
+                <button class="text-blue-600 font-medium flex items-center justify-center mx-auto">
+                    <i class="fas fa-lightbulb mr-2"></i> Not sure what to enter? See examples
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- We are adding the JavaScript functionality -->
+    <script>
+        // We are waiting for the DOM to be fully loaded before executing our script
+        document.addEventListener('DOMContentLoaded', function() {
+            // We are getting references to menu toggle elements
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            // We are adding click event for mobile menu toggle
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-open');
+                overlay.classList.toggle('overlay-active');
+            });
+            
+            // We are adding click event to close sidebar when overlay is clicked
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.remove('overlay-active');
+            });
+            
+            // We are defining a list of common symptoms for autocomplete
+            const symptoms = [
+                "Headache", "Fever", "Cough", "Chest Pain", "Abdominal Pain",
+                "Dizziness", "Nausea", "Shortness of Breath", "Fatigue",
+                "Joint Pain", "Back Pain", "Rash", "Sore Throat", "Insomnia",
+                "Anxiety", "Depression", "Vision Problems", "Hearing Loss"
+            ];
+            
+            // We are getting references to symptom-related elements
+            const symptomInput = document.getElementById('symptom-input');
+            const symptomSuggestions = document.getElementById('symptom-suggestions');
+            const symptomChipsContainer = document.getElementById('symptom-chips-container');
+            const findSpecialistBtn = document.getElementById('find-specialist-btn');
+            const resultsSection = document.getElementById('results-section');
+            const emptyState = document.getElementById('empty-state');
+            
+            // We are initializing the empty state as visible
+            emptyState.classList.remove('hidden');
+            
+            // We are creating an array to store selected symptoms
+            let selectedSymptoms = [];
+            
+            // We are adding input event listener for symptom suggestions
+            symptomInput.addEventListener('input', function() {
+                const input = this.value.toLowerCase();
+                if (input.length > 1) {
+                    // We are filtering symptoms based on user input
+                    const filtered = symptoms.filter(symptom => 
+                        symptom.toLowerCase().includes(input)
+                    );
+                    
+                    // We are showing matching suggestions
+                    showSuggestions(filtered);
+                } else {
+                    // We are hiding suggestions when input is too short
+                    hideSuggestions();
+                }
+            });
+            
+            // We are adding click event for symptom suggestions
+            symptomSuggestions.addEventListener('click', function(e) {
+                if (e.target.classList.contains('symptom-suggestion')) {
+                    const symptom = e.target.textContent;
+                    addSymptom(symptom);
+                    symptomInput.value = '';
+                    hideSuggestions();
+                }
+            });
+            
+            // We are adding keydown event for Enter key
+            symptomInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    e.preventDefault();
+                    addSymptom(this.value.trim());
+                    this.value = '';
+                    hideSuggestions();
+                }
+            });
+            
+            // We are adding click events for common symptom tags
+            document.querySelectorAll('[data-symptom]').forEach(el => {
+                el.addEventListener('click', function() {
+                    addSymptom(this.dataset.symptom);
+                });
+            });
+            
+            // We are adding click event to remove symptoms
+            symptomChipsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-symptom')) {
+                    const chip = e.target.closest('.symptom-tag');
+                    const symptom = chip.querySelector('span').textContent;
+                    removeSymptom(symptom);
+                }
+            });
+            
+            // We are adding click event for find specialist button
+            findSpecialistBtn.addEventListener('click', function() {
+                if (selectedSymptoms.length > 0) {
+                    // We are showing results when symptoms are entered
+                    resultsSection.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                    // We are scrolling to results smoothly
+                    resultsSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // We are showing alert if no symptoms are entered
+                    alert('Please add at least one symptom');
+                }
+            });
+            
+            // We are defining function to show suggestions
+            function showSuggestions(suggestions) {
+                if (suggestions.length === 0) {
+                    // We are showing message when no suggestions found
+                    symptomSuggestions.innerHTML = '<div class="symptom-suggestion p-3 text-gray-500">No matching symptoms found</div>';
+                } else {
+                    // We are creating suggestion items
+                    symptomSuggestions.innerHTML = suggestions.map(symptom => 
+                        `<div class="symptom-suggestion">${symptom}</div>`
+                    ).join('');
+                }
+                symptomSuggestions.style.display = 'block';
+            }
+            
+            // We are defining function to hide suggestions
+            function hideSuggestions() {
+                symptomSuggestions.style.display = 'none';
+            }
+            
+            // We are defining function to add a symptom
+            function addSymptom(symptom) {
+                if (!selectedSymptoms.includes(symptom)) {
+                    selectedSymptoms.push(symptom);
+                    renderSymptoms();
+                }
+            }
+            
+            // We are defining function to remove a symptom
+            function removeSymptom(symptom) {
+                selectedSymptoms = selectedSymptoms.filter(s => s !== symptom);
+                renderSymptoms();
+            }
+            
+            // We are defining function to render symptoms as chips
+            function renderSymptoms() {
+                symptomChipsContainer.innerHTML = selectedSymptoms.map(symptom => `
+                    <div class="symptom-tag">
+                        <span>${symptom}</span>
+                        <button class="remove-symptom">&times;</button>
+                    </div>
+                `).join('');
+                
+                // We are adding placeholder if no symptoms are selected
+                if (selectedSymptoms.length === 0) {
+                    symptomChipsContainer.innerHTML = '<div class="text-gray-400 text-sm py-2">No symptoms added yet</div>';
+                }
+            }
+            
+            // We are initializing the symptoms display
+            renderSymptoms();
+        });
+    </script>
+</body>
+</html>
